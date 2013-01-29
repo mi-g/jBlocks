@@ -1,0 +1,543 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"> <style>
+	.KEYW {color: #933;}
+	.COMM {color: #bbb; font-style: italic;}
+	.NUMB {color: #393;}
+	.STRN {color: #393;}
+	.REGX {color: #339;}
+	.line {border-right: 1px dotted #666; color: #666; font-style: normal;}
+	</style></head><body><pre><span class='line'>  1</span> <span class="COMM">/* This Source Code Form is subject to the terms of the Mozilla Public
+<span class='line'>  2</span>  * License, v. 2.0. If a copy of the MPL was not distributed with this
+<span class='line'>  3</span>  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */</span><span class="WHIT">
+<span class='line'>  4</span> 
+<span class='line'>  5</span> </span><span class="COMM">/**
+<span class='line'>  6</span>  * @author mig &lt;michel.gutierrez@gmail.com>
+<span class='line'>  7</span>  * @version 0.1
+<span class='line'>  8</span>  * @module jBlocks 
+<span class='line'>  9</span>  * @overview Javascript library for automatic responsive design oriented layouts. 
+<span class='line'> 10</span>  */</span><span class="WHIT">
+<span class='line'> 11</span> 
+<span class='line'> 12</span> </span><span class="COMM">/**
+<span class='line'> 13</span>  * &lt;p>A Block represents a rectangular area inside a JBlocks viewport. The exact position of the Block depends on the result of the layout calculation
+<span class='line'> 14</span>  * performed by the library based on the created Block objects inside the JBlocks.&lt;/p>
+<span class='line'> 15</span>  * &lt;p>The constructor should not be invoked directly but {@link JBlocks#newBlock} or {@link JBlocks#addNewBlock} should be used instead.&lt;/p>
+<span class='line'> 16</span>  * @name Block
+<span class='line'> 17</span>  * @class Define a block to be displayed into a JBlocks.
+<span class='line'> 18</span>  */</span><span class="WHIT">
+<span class='line'> 19</span> </span><span class="NAME">$.jBlocks</span><span class="PUNC">(</span><span class="STRN">"defineBlockClass"</span><span class="PUNC">,</span><span class="STRN">"Block"</span><span class="PUNC">,</span><span class="STRN">"Class"</span><span class="PUNC">,</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 20</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'> 21</span> 	 * Initializes a block.
+<span class='line'> 22</span> 	 * The method is invoked by the jBlocks core and must never be called directly. 
+<span class='line'> 23</span> 	 *
+<span class='line'> 24</span> 	 * @name Block#init
+<span class='line'> 25</span> 	 * @function
+<span class='line'> 26</span> 	 * @param {Object} [layout] Object defining the layout preferences for the Block.
+<span class='line'> 27</span> 	 * @param {Number} [layout.priority=0] When performing a layout, the actual Block objects positions are calculated starting with highest priority. 
+<span class='line'> 28</span> 	 * @param {Number} [layout.importance=0] If the JBlocks has option &lt;i>fixed&lt;/i> set to &lt;i>both&lt;/i> and there is no space enough to display all the Blocks,
+<span class='line'> 29</span> 	 * the &lt;i>importance&lt;/i> parameter is used to determine which blocks will be hidden. 
+<span class='line'> 30</span> 	 * @param {Integer} [layout.w=1] the minimum virtual width required for this block.
+<span class='line'> 31</span> 	 * @param {Integer} [layout.h=1] the minimum virtual height required for this block.
+<span class='line'> 32</span> 	 * @param {String} [layout.pref="default"] the preference for positioning the block:&lt;ul>
+<span class='line'> 33</span> 	 * &lt;li>&lt;i>default&lt;/i>: if JBlocks &lt;i>fixed&lt;/i> option is set to &lt;i>height&lt;/i>, the &lt;i>pref&lt;/i> field behaves as if it was "left top" otherwise as "top left".&lt;/li>
+<span class='line'> 34</span> 	 * &lt;li>&lt;i>top left&lt;/i>: displays the block as top as possible then as left as possible.&lt;/li>
+<span class='line'> 35</span> 	 * &lt;li>&lt;i>left top&lt;/i>: displays the block as left as possible then as top as possible.&lt;/li>
+<span class='line'> 36</span> 	 * &lt;li>&lt;i>top right&lt;/i>: displays the block as top as possible then as right as possible in the viewable viewport area.&lt;/li>
+<span class='line'> 37</span> 	 * &lt;li>&lt;i>right top&lt;/i>: displays the block as right as possible in the viewable area then as top as possible.&lt;/li>
+<span class='line'> 38</span> 	 * &lt;li>&lt;i>bottom left&lt;/i>: displays the block as bottom as possible in the viewable area then as left as possible.&lt;/li>
+<span class='line'> 39</span> 	 * &lt;li>&lt;i>left bottom&lt;/i>: displays the block as left as possible then as bottom as possible in the viewable area.&lt;/li>
+<span class='line'> 40</span> 	 * &lt;li>&lt;i>bottom right&lt;/i>: displays the block as bottom as possible then as right as possible, in the viewable viewport area.&lt;/li>
+<span class='line'> 41</span> 	 * &lt;li>&lt;i>right bottom&lt;/i>: displays the block as right as possible then as bottom as possible, in the viewable area.&lt;/li>
+<span class='line'> 42</span> 	 * &lt;/ul>
+<span class='line'> 43</span> 	 * @param {Boolean} [layout.visible=true] should this block be visible.
+<span class='line'> 44</span> 	 * @param {Number} [layout.expandWidth=1] if set to 0, the block will never expand and will keep the width given by the &lt;i>w&lt;/i> parameter. Otherwise,
+<span class='line'> 45</span> 	 * if JBlock option &lt;i>fillHoles&lt;/i> is set to true, the layout algorithm tries to expand the neighbor blocks to fill the holes. Blocks with highest 
+<span class='line'> 46</span> 	 * &lt;i>expandWidth&lt;/i> are expanded in priority.
+<span class='line'> 47</span> 	 * @param {Number} [layout.expandHeight=1] if set to 0, the block will never expand and will keep the height given by the &lt;i>h&lt;/i> parameter. Otherwise,
+<span class='line'> 48</span> 	 * if JBlock option &lt;i>fillHoles&lt;/i> is set to true, the layout algorithm tries to expand the neighbor blocks to fill the holes. Blocks with highest 
+<span class='line'> 49</span> 	 * &lt;i>expandHeight&lt;/i> are expanded in priority.
+<span class='line'> 50</span> 	 * 
+<span class='line'> 51</span> 	 * @param {Object} [options] Object defining the options for the Block.
+<span class='line'> 52</span> 	 * @param {String} [options.id] a string to be used as block id. Only letters, digits and dash characters are to be used. If not set, a safe value is automatically used. 
+<span class='line'> 53</span> 	 * @param {String} [options.blockClass=null] an additional class to be added to the block. For instance, the block may define a border.
+<span class='line'> 54</span> 	 * @param {String} [options.blockContentClass=null] an additional class to be added to the block content area. For instance, the block may define a background-color.
+<span class='line'> 55</span> 	 * @param {NumberArray} [options.margin] the margins [top,right,bottom,left] expressed relatively to the block size. If not set, the containing JBlocks margin applies.
+<span class='line'> 56</span> 	 * @param {NumberArray} [options.padding] the paddings [top,right,bottom,left] expressed relatively to the block size. If not set, the containing JBlocks margin applies.
+<span class='line'> 57</span> 	 * @param {Number} [options.borderRadius=0.1] the block border radius expressed relatively to the block size.
+<span class='line'> 58</span> 	 * @param {Number} [options.contentBorderRadius=0.1] the block content border radius expressed relatively to the block content size.
+<span class='line'> 59</span> 	 * @param {Boolean} [options.requireAuth=false] if set to true, the becomes visible only when the user is logged in.
+<span class='line'> 60</span> 	 * @param {Boolean} [options.requireAnon=false] if set to true, the becomes visible only when the user is logged out.
+<span class='line'> 61</span> 	 * @param {Number} [options.resizeAnimateDelay=400] the number of milliseconds to animate the block resizing.
+<span class='line'> 62</span> 	 * @param {Function} [options.onCreate] function called when the block is created.
+<span class='line'> 63</span> 	 * @param {Function} [options.onRemove] function called when the block is removed.
+<span class='line'> 64</span> 	 * @param {Function} [options.onResize] function(geometry) called when the block has resized.
+<span class='line'> 65</span> 	 * @param {Function} [options.onStartResize] function(geometry) called when the block starts resizing. Parameter &lt;i>geometry&lt;/i> represents the final size.
+<span class='line'> 66</span> 	 * @param {Function} [options.w] function(viewport) called before a relayout so the block can returns its virtual width overloading the provided &lt;i>layout.w&lt;/i>.
+<span class='line'> 67</span> 	 * @param {Function} [options.h] function(viewport) called before a relayout so the block can returns its virtual height overloading the provided &lt;i>layout.h&lt;/i>.
+<span class='line'> 68</span> 	 * @param {Array} [options.layouts] an array containing the various layouts a block can have. The Block API provides methods to navigate amongst the 
+<span class='line'> 69</span> 	 * defined layouts, allowing blocks to grow or shrink. 
+<span class='line'> 70</span> 	 * Each layout entry contains:&lt;ul>
+<span class='line'> 71</span> 	 * &lt;li>&lt;i>w&lt;/i>: an integer or a function(viewport) returning the block width.&lt;/li>
+<span class='line'> 72</span> 	 * &lt;li>&lt;i>h&lt;/i>: an integer or a function(viewport) returning the block height.&lt;/li>
+<span class='line'> 73</span> 	 * &lt;/ul>
+<span class='line'> 74</span> 	 * @param {Integer} [options.layoutIndex] the initial index within the &lt;i>layouts&lt;/i> array.
+<span class='line'> 75</span> 	 * @param {String} [options.tooltip] if set, the given string appears as a tooltip when the mouse is over the block.
+<span class='line'> 76</span> 	 * @param {Boolean} [options.earlyLayout=true] during a single layout process, a block may be asked to resize several times. If resizing is expensive,
+<span class='line'> 77</span> 	 * the &lt;i>earlyLayout&lt;/i> option can be set to &lt;i>false&lt;/i> so the block is resized only once at the end of the layout operation.
+<span class='line'> 78</span> 	 * @param {Float} [options.shadow] defines a shadow for the block (i.e. 0.15). If unset, the JBlocks &lt;i>blockShadow&lt;/i> option applies. 
+<span class='line'> 79</span> 	 * 
+<span class='line'> 80</span> 	 */</span><span class="WHIT">
+<span class='line'> 81</span> </span><span class="WHIT">	</span><span class="NAME">init</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">layout</span><span class="PUNC">,</span><span class="NAME">options</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 82</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">$this</span><span class="PUNC">=</span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 83</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">arguments.length</span><span class="PUNC">&lt;</span><span class="NUMB">2</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'> 84</span> </span><span class="WHIT">			</span><span class="NAME">options</span><span class="PUNC">=</span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 85</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">arguments.length</span><span class="PUNC">&lt;</span><span class="NUMB">1</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'> 86</span> </span><span class="WHIT">			</span><span class="NAME">layout</span><span class="PUNC">=</span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 87</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="PUNC">!</span><span class="NAME">options.id</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'> 88</span> </span><span class="WHIT">			</span><span class="NAME">this.id</span><span class="PUNC">=</span><span class="STRN">"anon-"</span><span class="PUNC">+</span><span class="NAME">$.jBlocks</span><span class="PUNC">(</span><span class="STRN">"getBlockAnonIndex"</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 89</span> </span><span class="WHIT">		</span><span class="KEYW">else</span><span class="WHIT">
+<span class='line'> 90</span> </span><span class="WHIT">			</span><span class="NAME">this.id</span><span class="PUNC">=</span><span class="NAME">options.id</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 91</span> </span><span class="WHIT">		</span><span class="NAME">this.layout</span><span class="PUNC">=</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 92</span> </span><span class="WHIT">			</span><span class="NAME">priority</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 93</span> </span><span class="WHIT">			</span><span class="NAME">importance</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 94</span> </span><span class="WHIT">			</span><span class="NAME">w</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NUMB">1</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 95</span> </span><span class="WHIT">			</span><span class="NAME">h</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NUMB">1</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 96</span> </span><span class="WHIT">			</span><span class="NAME">pref</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">"default"</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 97</span> </span><span class="WHIT">			</span><span class="NAME">visible</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 98</span> </span><span class="WHIT">			</span><span class="NAME">expandWidth</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NUMB">1</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 99</span> </span><span class="WHIT">			</span><span class="NAME">expandHeight</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NUMB">1</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>100</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>101</span> </span><span class="WHIT">		</span><span class="NAME">this.actualLayout</span><span class="PUNC">=</span><span class="PUNC">{</span><span class="WHIT"> </span><span class="NAME">w</span><span class="PUNC">:</span><span class="NUMB">1</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">h</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NUMB">1</span><span class="WHIT"> </span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>102</span> </span><span class="WHIT">		</span><span class="NAME">$.extend</span><span class="PUNC">(</span><span class="NAME">this.layout</span><span class="PUNC">,</span><span class="NAME">layout</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>103</span> </span><span class="WHIT">		</span><span class="NAME">this.maximized</span><span class="PUNC">=</span><span class="KEYW">false</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>104</span> </span><span class="WHIT">		</span><span class="COMM">/**
+<span class='line'>105</span> 		 * The JBlocks object managing the block.
+<span class='line'>106</span> 		 * @name Block#jBlocks
+<span class='line'>107</span> 		 * @field
+<span class='line'>108</span> 		 */</span><span class="WHIT">
+<span class='line'>109</span> </span><span class="WHIT">		</span><span class="NAME">this.jBlocks</span><span class="PUNC">=</span><span class="KEYW">null</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>110</span> </span><span class="WHIT">		</span><span class="COMM">/**
+<span class='line'>111</span> 		 * The name of the class for this block object.
+<span class='line'>112</span> 		 * @name Block#className
+<span class='line'>113</span> 		 * @field
+<span class='line'>114</span> 		 */</span><span class="WHIT">
+<span class='line'>115</span> </span><span class="WHIT">		</span><span class="NAME">this.className</span><span class="PUNC">=</span><span class="STRN">"Block"</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>116</span> </span><span class="WHIT">		</span><span class="NAME">this.options</span><span class="PUNC">=</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>117</span> </span><span class="WHIT">			</span><span class="NAME">blockClass</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>118</span> </span><span class="WHIT">			</span><span class="NAME">blockContentClass</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>119</span> </span><span class="WHIT">			</span><span class="NAME">margin</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>120</span> </span><span class="WHIT">			</span><span class="NAME">padding</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>121</span> </span><span class="WHIT">			</span><span class="NAME">borderRadius</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NUMB">0.15</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>122</span> </span><span class="WHIT">			</span><span class="NAME">contentBorderRadius</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NUMB">0.0</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>123</span> </span><span class="WHIT">			</span><span class="NAME">capture</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">false</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>124</span> </span><span class="WHIT">			</span><span class="NAME">maximizable</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>125</span> </span><span class="WHIT">			</span><span class="NAME">requireAuth</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">false</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>126</span> </span><span class="WHIT">			</span><span class="NAME">requireAnon</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">false</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>127</span> </span><span class="WHIT">			</span><span class="NAME">autoFit</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">false</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>128</span> </span><span class="WHIT">			</span><span class="NAME">resizeAnimateDelay</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NUMB">400</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>129</span> </span><span class="WHIT">			</span><span class="NAME">debugBlockLayout</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">false</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>130</span> </span><span class="WHIT">			</span><span class="NAME">onCreate</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>131</span> </span><span class="WHIT">			</span><span class="NAME">onRemove</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>132</span> </span><span class="WHIT">			</span><span class="NAME">onResize</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>133</span> </span><span class="WHIT">			</span><span class="NAME">onStartResize</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>134</span> </span><span class="WHIT">			</span><span class="NAME">tooltip</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>135</span> </span><span class="WHIT">			</span><span class="NAME">earlyLayout</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>136</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>137</span> </span><span class="WHIT">		</span><span class="NAME">this.tags</span><span class="PUNC">=</span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>138</span> </span><span class="WHIT">		</span><span class="NAME">$.extend</span><span class="PUNC">(</span><span class="NAME">this.options</span><span class="PUNC">,</span><span class="NAME">options</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>139</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">this.options.requireAuth</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="NAME">$.jBlocks.loggedIn</span><span class="PUNC">==</span><span class="KEYW">null</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>140</span> </span><span class="WHIT">			</span><span class="NAME">this.layout.visible</span><span class="PUNC">=</span><span class="KEYW">false</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>141</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">this.options.requireAnon</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="NAME">$.jBlocks.loggedIn</span><span class="PUNC">!=</span><span class="KEYW">null</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>142</span> </span><span class="WHIT">			</span><span class="NAME">this.layout.visible</span><span class="PUNC">=</span><span class="KEYW">false</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>143</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>144</span> </span><span class="WHIT">	</span><span class="NAME">create</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">anchor</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>145</span> </span><span class="WHIT">		</span><span class="COMM">//JocLog("create",this);</span><span class="WHIT">
+<span class='line'>146</span> 
+<span class='line'>147</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">this.options.layouts</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>148</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">this.options.layoutIndex</span><span class="PUNC">==</span><span class="STRN">"undefined"</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>149</span> </span><span class="WHIT">				</span><span class="NAME">this.options.layoutIndex</span><span class="PUNC">=</span><span class="NAME">Math.floor</span><span class="PUNC">(</span><span class="PUNC">(</span><span class="NAME">this.options.layouts.length</span><span class="PUNC">-</span><span class="NUMB">1</span><span class="PUNC">)</span><span class="PUNC">/</span><span class="NUMB">2</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>150</span> </span><span class="WHIT">			</span><span class="NAME">this.options.w</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">viewport</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>151</span> </span><span class="WHIT">				</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">layout</span><span class="PUNC">=</span><span class="NAME">$this.options.layouts</span><span class="PUNC">[</span><span class="NAME">$this.options.layoutIndex</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>152</span> </span><span class="WHIT">				</span><span class="KEYW">switch</span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">layout.w</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>153</span> </span><span class="WHIT">				</span><span class="KEYW">case</span><span class="WHIT"> </span><span class="STRN">'number'</span><span class="PUNC">:</span><span class="WHIT">
+<span class='line'>154</span> </span><span class="WHIT">					</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">layout.w</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>155</span> </span><span class="WHIT">				</span><span class="KEYW">case</span><span class="WHIT"> </span><span class="STRN">'function'</span><span class="PUNC">:</span><span class="WHIT">
+<span class='line'>156</span> </span><span class="WHIT">					</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">layout.w.call</span><span class="PUNC">(</span><span class="NAME">$this</span><span class="PUNC">,</span><span class="NAME">viewport</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>157</span> </span><span class="WHIT">				</span><span class="KEYW">default</span><span class="PUNC">:</span><span class="WHIT"> 
+<span class='line'>158</span> 					</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">$this.layout.w</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>159</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>160</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>161</span> </span><span class="WHIT">			</span><span class="NAME">this.options.h</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">viewport</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>162</span> </span><span class="WHIT">				</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">layout</span><span class="PUNC">=</span><span class="NAME">$this.options.layouts</span><span class="PUNC">[</span><span class="NAME">$this.options.layoutIndex</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>163</span> </span><span class="WHIT">				</span><span class="KEYW">switch</span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">layout.h</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>164</span> </span><span class="WHIT">				</span><span class="KEYW">case</span><span class="WHIT"> </span><span class="STRN">'number'</span><span class="PUNC">:</span><span class="WHIT">
+<span class='line'>165</span> </span><span class="WHIT">					</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">layout.h</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>166</span> </span><span class="WHIT">				</span><span class="KEYW">case</span><span class="WHIT"> </span><span class="STRN">'function'</span><span class="PUNC">:</span><span class="WHIT">
+<span class='line'>167</span> </span><span class="WHIT">					</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">layout.h.call</span><span class="PUNC">(</span><span class="NAME">$this</span><span class="PUNC">,</span><span class="NAME">viewport</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>168</span> </span><span class="WHIT">				</span><span class="KEYW">default</span><span class="PUNC">:</span><span class="WHIT"> 
+<span class='line'>169</span> 					</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">$this.layout.h</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>170</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>171</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>172</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>173</span> 
+<span class='line'>174</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">$this</span><span class="PUNC">=</span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>175</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">blockClass</span><span class="PUNC">=</span><span class="NAME">this.options.blockClass</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="NAME">this.jBlocks.options.blockClass</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>176</span> </span><span class="WHIT">		</span><span class="NAME">this.anchor</span><span class="PUNC">=</span><span class="NAME">$</span><span class="PUNC">(</span><span class="STRN">"&lt;div/>"</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">appendTo</span><span class="PUNC">(</span><span class="NAME">anchor.children</span><span class="PUNC">(</span><span class="STRN">".jblocks-frame"</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">children</span><span class="PUNC">(</span><span class="STRN">".jblocks-frame-content"</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>177</span> </span><span class="WHIT">		</span><span class="NAME">this.anchor.addClass</span><span class="PUNC">(</span><span class="STRN">"jblocks-block"</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>178</span> </span><span class="WHIT">			</span><span class="PUNC">.</span><span class="NAME">addClass</span><span class="PUNC">(</span><span class="STRN">"jblocks-"</span><span class="PUNC">+</span><span class="NAME">this.jBlocks.jBlocksIndex</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>179</span> </span><span class="WHIT">			</span><span class="PUNC">.</span><span class="NAME">attr</span><span class="PUNC">(</span><span class="STRN">"id"</span><span class="PUNC">,</span><span class="STRN">"jblocks-block-"</span><span class="PUNC">+</span><span class="NAME">this.jBlocks.jBlocksIndex</span><span class="PUNC">+</span><span class="STRN">"-"</span><span class="PUNC">+</span><span class="NAME">this.id</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>180</span> </span><span class="WHIT">			</span><span class="PUNC">.</span><span class="NAME">css</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>181</span> </span><span class="WHIT">				</span><span class="NAME">top</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">$</span><span class="PUNC">(</span><span class="STRN">"body"</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">height</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">/</span><span class="NUMB">2</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>182</span> </span><span class="WHIT">				</span><span class="NAME">left</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">$</span><span class="PUNC">(</span><span class="STRN">"body"</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">width</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">/</span><span class="NUMB">2</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>183</span> </span><span class="WHIT">				</span><span class="NAME">width</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NUMB">1</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>184</span> </span><span class="WHIT">				</span><span class="NAME">height</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NUMB">1</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>185</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>186</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">blockClass</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>187</span> </span><span class="WHIT">			</span><span class="NAME">this.anchor.addClass</span><span class="PUNC">(</span><span class="NAME">blockClass</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>188</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">this.options.debugBlockLayout</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="NAME">this.jBlocks.options.debugBlockLayout</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>189</span> </span><span class="WHIT">			</span><span class="NAME">this.anchor.bind</span><span class="PUNC">(</span><span class="STRN">"mouseover"</span><span class="PUNC">,</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">event</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>190</span> </span><span class="WHIT">				</span><span class="NAME">$</span><span class="PUNC">(</span><span class="STRN">"head title"</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">text</span><span class="PUNC">(</span><span class="NAME">$this.className</span><span class="PUNC">+</span><span class="STRN">" "</span><span class="PUNC">+</span><span class="NAME">JSON.stringify</span><span class="PUNC">(</span><span class="NAME">$this.layout</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>191</span> </span><span class="WHIT">				</span><span class="NAME">event.stopPropagation</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>192</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>193</span> 
+<span class='line'>194</span> </span><span class="WHIT">		</span><span class="NAME">this.captMask</span><span class="PUNC">=</span><span class="NAME">$</span><span class="PUNC">(</span><span class="STRN">"&lt;div/>"</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">addClass</span><span class="PUNC">(</span><span class="STRN">"jblocks-block-mask"</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">appendTo</span><span class="PUNC">(</span><span class="NAME">this.anchor</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>195</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">blockContentClass</span><span class="PUNC">=</span><span class="NAME">this.options.blockContentClass</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="NAME">this.jBlocks.options.blockContentClass</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>196</span> </span><span class="WHIT">		</span><span class="NAME">this.content</span><span class="PUNC">=</span><span class="NAME">$</span><span class="PUNC">(</span><span class="STRN">"&lt;div/>"</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">addClass</span><span class="PUNC">(</span><span class="STRN">"jblocks-block-content"</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">appendTo</span><span class="PUNC">(</span><span class="NAME">this.anchor</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>197</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">blockContentClass</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>198</span> </span><span class="WHIT">			</span><span class="NAME">this.content.addClass</span><span class="PUNC">(</span><span class="NAME">blockContentClass</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>199</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">this.options.tooltip</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>200</span> </span><span class="WHIT">			</span><span class="NAME">this.content.attr</span><span class="PUNC">(</span><span class="STRN">"title"</span><span class="PUNC">,</span><span class="NAME">this.options.tooltip</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>201</span> </span><span class="WHIT">		</span><span class="NAME">this.onCreate</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>202</span> </span><span class="WHIT">		</span><span class="NAME">this.options.onCreate.call</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>203</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>204</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>205</span> 	 * Called when the block is about to be removed.
+<span class='line'>206</span> 	 * @name Block#onRemove
+<span class='line'>207</span> 	 * @function
+<span class='line'>208</span> 	 */</span><span class="WHIT">
+<span class='line'>209</span> </span><span class="WHIT">	</span><span class="NAME">onRemove</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>210</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">this.anchor</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>211</span> </span><span class="WHIT">			</span><span class="NAME">this.anchor.remove</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>212</span> </span><span class="WHIT">		</span><span class="NAME">this.options.onRemove</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>213</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>214</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>215</span> 	 * Remove the block from its JBlocks context.
+<span class='line'>216</span> 	 * @name Block#remove
+<span class='line'>217</span> 	 * @function
+<span class='line'>218</span> 	 */</span><span class="WHIT">
+<span class='line'>219</span> </span><span class="WHIT">	</span><span class="NAME">remove</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>220</span> </span><span class="WHIT">		</span><span class="NAME">this.jBlocks.removeBlock</span><span class="PUNC">(</span><span class="NAME">this.id</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>221</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>222</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>223</span> 	 * Returns whether the block uses a set of layouts from &lt;i>options.layouts&lt;/i> and can step up to a bigger size.
+<span class='line'>224</span> 	 * @name Block#canGrow
+<span class='line'>225</span> 	 * @function
+<span class='line'>226</span> 	 * @returns whether calling the {@link Block#grow} method will have an effect on the block size. 
+<span class='line'>227</span> 	 */</span><span class="WHIT">
+<span class='line'>228</span> </span><span class="WHIT">	</span><span class="NAME">canGrow</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>229</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.options.layouts</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="NAME">this.options.layoutIndex</span><span class="PUNC">&lt;</span><span class="NAME">this.options.layouts.length</span><span class="PUNC">-</span><span class="NUMB">1</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>230</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>231</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>232</span> 	 * Step up to the higher layout size if a set of layouts from &lt;i>options.layouts&lt;/i> has been defined.
+<span class='line'>233</span> 	 * @name Block#grow
+<span class='line'>234</span> 	 * @function
+<span class='line'>235</span> 	 * @see Block#canGrow
+<span class='line'>236</span> 	 */</span><span class="WHIT">
+<span class='line'>237</span> </span><span class="WHIT">	</span><span class="NAME">grow</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>238</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">this.canGrow</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>239</span> </span><span class="WHIT">			</span><span class="NAME">this.options.layoutIndex</span><span class="PUNC">++</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>240</span> </span><span class="WHIT">			</span><span class="COMM">//this.log("layoutIndex",this.options.layoutIndex);</span><span class="WHIT">
+<span class='line'>241</span> </span><span class="WHIT">			</span><span class="NAME">this.jBlocks.checkLayout</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>242</span> </span><span class="WHIT">			</span><span class="NAME">this.focus</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>243</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>244</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>245</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>246</span> 	 * Returns whether the block uses a set of layouts from &lt;i>options.layouts&lt;/i> and can step down to a smaller size.
+<span class='line'>247</span> 	 * @name Block#canShrink
+<span class='line'>248</span> 	 * @function
+<span class='line'>249</span> 	 * @returns whether calling the {@link Block#shrink} method will have an effect on the block size. 
+<span class='line'>250</span> 	 */</span><span class="WHIT">
+<span class='line'>251</span> </span><span class="WHIT">	</span><span class="NAME">canShrink</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>252</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.options.layouts</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="NAME">this.options.layoutIndex</span><span class="PUNC">></span><span class="NUMB">0</span><span class="PUNC">;</span><span class="WHIT"> 
+<span class='line'>253</span> 	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>254</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>255</span> 	 * Step down to the smaller layout size if a set of layouts from &lt;i>options.layouts&lt;/i> has been defined.
+<span class='line'>256</span> 	 * @name Block#shrink
+<span class='line'>257</span> 	 * @function
+<span class='line'>258</span> 	 * @see Block#canShrink
+<span class='line'>259</span> 	 */</span><span class="WHIT">
+<span class='line'>260</span> </span><span class="WHIT">	</span><span class="NAME">shrink</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>261</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">this.canShrink</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>262</span> </span><span class="WHIT">			</span><span class="NAME">this.options.layoutIndex</span><span class="PUNC">--</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>263</span> </span><span class="WHIT">			</span><span class="COMM">//this.log("layoutIndex",this.options.layoutIndex);</span><span class="WHIT">
+<span class='line'>264</span> </span><span class="WHIT">			</span><span class="NAME">this.jBlocks.checkLayout</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>265</span> </span><span class="WHIT">			</span><span class="NAME">this.focus</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>266</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>267</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>268</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>269</span> 	 * Ensure the specified Block object will be visible after the next layout.
+<span class='line'>270</span> 	 * @name Block#focus
+<span class='line'>271</span> 	 * @function
+<span class='line'>272</span> 	 * @see JBlocks#focusBlockId
+<span class='line'>273</span> 	 */</span><span class="WHIT">
+<span class='line'>274</span> </span><span class="WHIT">	</span><span class="NAME">focus</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>275</span> </span><span class="WHIT">		</span><span class="NAME">this.jBlocks.focusBlockId</span><span class="PUNC">(</span><span class="NAME">this.id</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>276</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>277</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>278</span> 	 * Add tag to the block. Tags are used to find blocks more easily. A block can have several tags.
+<span class='line'>279</span> 	 * @name Block#addTag
+<span class='line'>280</span> 	 * @function
+<span class='line'>281</span> 	 * @param {String} tag the tag to add to the block.
+<span class='line'>282</span> 	 */</span><span class="WHIT">
+<span class='line'>283</span> </span><span class="WHIT">	</span><span class="NAME">addTag</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">tag</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>284</span> </span><span class="WHIT">		</span><span class="NAME">this.tags</span><span class="PUNC">[</span><span class="NAME">tag</span><span class="PUNC">]</span><span class="PUNC">=</span><span class="KEYW">true</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>285</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>286</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>287</span> 	 * Maximizes the block in the JBlocks viewport.
+<span class='line'>288</span> 	 * @name Block#maximize
+<span class='line'>289</span> 	 * @function
+<span class='line'>290</span> 	 * @param {Boolean} [options.back=true] when set to &lt;i>true&lt;/i> a Back block button is created and displayed in order to leave the maximized mode. 
+<span class='line'>291</span> 	 */</span><span class="WHIT">
+<span class='line'>292</span> </span><span class="WHIT">	</span><span class="NAME">maximize</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>293</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">$this</span><span class="PUNC">=</span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>294</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">this.maximized</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="PUNC">!</span><span class="NAME">this.options.maximizable</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>295</span> </span><span class="WHIT">			</span><span class="KEYW">return</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>296</span> </span><span class="WHIT">		</span><span class="NAME">$.extend</span><span class="PUNC">(</span><span class="NAME">options</span><span class="PUNC">,</span><span class="NAME">options0</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>297</span> </span><span class="WHIT">		</span><span class="NAME">this.jBlocks.pushLayout</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>298</span> </span><span class="WHIT">		</span><span class="NAME">this.jBlocks.hideAllBlocks</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>299</span> </span><span class="WHIT">		</span><span class="NAME">this.layout.visible</span><span class="PUNC">=</span><span class="KEYW">true</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>300</span> </span><span class="WHIT">		</span><span class="NAME">this.layout.w</span><span class="PUNC">=</span><span class="NAME">this.jBlocks.viewport.w</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>301</span> </span><span class="WHIT">		</span><span class="NAME">this.layout.h</span><span class="PUNC">=</span><span class="NAME">this.jBlocks.viewport.h</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>302</span> </span><span class="WHIT">		</span><span class="NAME">this.jBlocks.checkLayout</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">	
+<span class='line'>303</span> 		</span><span class="NAME">this.maximized</span><span class="PUNC">=</span><span class="KEYW">true</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>304</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>305</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>306</span> 	 * Unmaximizes the block in the JBlocks viewport.
+<span class='line'>307</span> 	 * @name Block#unMaximize
+<span class='line'>308</span> 	 * @function
+<span class='line'>309</span> 	 */</span><span class="WHIT">
+<span class='line'>310</span> </span><span class="WHIT">	</span><span class="NAME">unMaximize</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>311</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="PUNC">!</span><span class="NAME">this.maximized</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>312</span> </span><span class="WHIT">			</span><span class="KEYW">return</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>313</span> </span><span class="WHIT">		</span><span class="NAME">this.jBlocks.popLayout</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>314</span> </span><span class="WHIT">		</span><span class="NAME">this.maximized</span><span class="PUNC">=</span><span class="KEYW">false</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>315</span> </span><span class="WHIT">		</span><span class="NAME">this.jBlocks.checkLayout</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">			
+<span class='line'>316</span> 	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>317</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>318</span> 	 * Called to build the block content. This function is only called once per block. 
+<span class='line'>319</span> 	 * The method is invoked by the jBlocks core and must never be called directly. 
+<span class='line'>320</span> 	 * @name Block#onCreate
+<span class='line'>321</span> 	 * @function
+<span class='line'>322</span> 	 */</span><span class="WHIT">
+<span class='line'>323</span> </span><span class="WHIT">	</span><span class="NAME">onCreate</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>324</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>325</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>326</span> 	 * Called just before the block is about to be resized. 
+<span class='line'>327</span> 	 * The method is invoked by the jBlocks core and must never be called directly.
+<span class='line'>328</span> 	 * @name Block#onStartResize
+<span class='line'>329</span> 	 * @function
+<span class='line'>330</span> 	 * @param {Object} geometry the new block content geometry.
+<span class='line'>331</span> 	 * @param {Number} geometry.width the width of the block content in pixels
+<span class='line'>332</span> 	 * @param {Number} geometry.height the height of the block content in pixels
+<span class='line'>333</span> 	 */</span><span class="WHIT">
+<span class='line'>334</span> </span><span class="WHIT">	</span><span class="NAME">onStartResize</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">geometry</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>335</span> </span><span class="WHIT">		</span><span class="NAME">this.options.onStartResize.call</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">,</span><span class="NAME">geometry</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>336</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>337</span> </span><span class="WHIT">	</span><span class="NAME">getContentGeometry</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">geometry</span><span class="PUNC">,</span><span class="NAME">uWidth</span><span class="PUNC">,</span><span class="NAME">uHeight</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>338</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">sizeRef</span><span class="PUNC">=</span><span class="NAME">Math.min</span><span class="PUNC">(</span><span class="NAME">uWidth</span><span class="PUNC">,</span><span class="NAME">uHeight</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>339</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">margin</span><span class="PUNC">=</span><span class="NAME">this.jBlocks.options.margin</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>340</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">this.options.margin</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>341</span> </span><span class="WHIT">			</span><span class="NAME">margin</span><span class="PUNC">=</span><span class="NAME">this.options.margin</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>342</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">padding</span><span class="PUNC">=</span><span class="NAME">this.jBlocks.options.padding</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>343</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">this.options.padding</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>344</span> </span><span class="WHIT">			</span><span class="NAME">padding</span><span class="PUNC">=</span><span class="NAME">this.options.padding</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>345</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">spacing</span><span class="PUNC">=</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>346</span> </span><span class="WHIT">				</span><span class="STRN">"margin-top"</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">sizeRef</span><span class="PUNC">*</span><span class="NAME">margin</span><span class="PUNC">[</span><span class="NUMB">0</span><span class="PUNC">]</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>347</span> </span><span class="WHIT">				</span><span class="STRN">"margin-bottom"</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">sizeRef</span><span class="PUNC">*</span><span class="NAME">margin</span><span class="PUNC">[</span><span class="NUMB">2</span><span class="PUNC">]</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>348</span> </span><span class="WHIT">				</span><span class="STRN">"margin-left"</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">sizeRef</span><span class="PUNC">*</span><span class="NAME">margin</span><span class="PUNC">[</span><span class="NUMB">3</span><span class="PUNC">]</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>349</span> </span><span class="WHIT">				</span><span class="STRN">"margin-right"</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">sizeRef</span><span class="PUNC">*</span><span class="NAME">margin</span><span class="PUNC">[</span><span class="NUMB">1</span><span class="PUNC">]</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>350</span> </span><span class="WHIT">				</span><span class="STRN">"padding-top"</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">sizeRef</span><span class="PUNC">*</span><span class="NAME">padding</span><span class="PUNC">[</span><span class="NUMB">0</span><span class="PUNC">]</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>351</span> </span><span class="WHIT">				</span><span class="STRN">"padding-bottom"</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">sizeRef</span><span class="PUNC">*</span><span class="NAME">padding</span><span class="PUNC">[</span><span class="NUMB">2</span><span class="PUNC">]</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>352</span> </span><span class="WHIT">				</span><span class="STRN">"padding-left"</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">sizeRef</span><span class="PUNC">*</span><span class="NAME">padding</span><span class="PUNC">[</span><span class="NUMB">3</span><span class="PUNC">]</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>353</span> </span><span class="WHIT">				</span><span class="STRN">"padding-right"</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">sizeRef</span><span class="PUNC">*</span><span class="NAME">padding</span><span class="PUNC">[</span><span class="NUMB">1</span><span class="PUNC">]</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>354</span> </span><span class="WHIT">				</span><span class="STRN">"border-left"</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">parseInt</span><span class="PUNC">(</span><span class="NAME">this.anchor.css</span><span class="PUNC">(</span><span class="STRN">"border-left-width"</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>355</span> </span><span class="WHIT">				</span><span class="STRN">"border-right"</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">parseInt</span><span class="PUNC">(</span><span class="NAME">this.anchor.css</span><span class="PUNC">(</span><span class="STRN">"border-right-width"</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>356</span> </span><span class="WHIT">				</span><span class="STRN">"border-top"</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">parseInt</span><span class="PUNC">(</span><span class="NAME">this.anchor.css</span><span class="PUNC">(</span><span class="STRN">"border-top-width"</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>357</span> </span><span class="WHIT">				</span><span class="STRN">"border-bottom"</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">parseInt</span><span class="PUNC">(</span><span class="NAME">this.anchor.css</span><span class="PUNC">(</span><span class="STRN">"border-bottom-width"</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT"> 
+<span class='line'>358</span> 		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>359</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">contentGeo</span><span class="PUNC">=</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>360</span> </span><span class="WHIT">			</span><span class="NAME">spacing</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">spacing</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>361</span> </span><span class="WHIT">			</span><span class="NAME">sizeRef</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">sizeRef</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>362</span> </span><span class="WHIT">			</span><span class="NAME">width</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">geometry.width</span><span class="WHIT">
+<span class='line'>363</span> </span><span class="WHIT">				</span><span class="PUNC">-</span><span class="PUNC">(</span><span class="NAME">margin</span><span class="PUNC">[</span><span class="NUMB">1</span><span class="PUNC">]</span><span class="PUNC">+</span><span class="NAME">margin</span><span class="PUNC">[</span><span class="NUMB">3</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="PUNC">*</span><span class="NAME">sizeRef</span><span class="WHIT">
+<span class='line'>364</span> </span><span class="WHIT">				</span><span class="PUNC">-</span><span class="PUNC">(</span><span class="NAME">padding</span><span class="PUNC">[</span><span class="NUMB">1</span><span class="PUNC">]</span><span class="PUNC">+</span><span class="NAME">padding</span><span class="PUNC">[</span><span class="NUMB">3</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="PUNC">*</span><span class="NAME">sizeRef</span><span class="WHIT">
+<span class='line'>365</span> </span><span class="WHIT">				</span><span class="PUNC">-</span><span class="NAME">spacing</span><span class="PUNC">[</span><span class="STRN">"border-left"</span><span class="PUNC">]</span><span class="WHIT">
+<span class='line'>366</span> </span><span class="WHIT">				</span><span class="PUNC">-</span><span class="NAME">spacing</span><span class="PUNC">[</span><span class="STRN">"border-right"</span><span class="PUNC">]</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>367</span> </span><span class="WHIT">			</span><span class="NAME">height</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">geometry.height</span><span class="WHIT">
+<span class='line'>368</span> </span><span class="WHIT">				</span><span class="PUNC">-</span><span class="PUNC">(</span><span class="NAME">margin</span><span class="PUNC">[</span><span class="NUMB">0</span><span class="PUNC">]</span><span class="PUNC">+</span><span class="NAME">margin</span><span class="PUNC">[</span><span class="NUMB">2</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="PUNC">*</span><span class="NAME">sizeRef</span><span class="WHIT">
+<span class='line'>369</span> </span><span class="WHIT">				</span><span class="PUNC">-</span><span class="PUNC">(</span><span class="NAME">padding</span><span class="PUNC">[</span><span class="NUMB">0</span><span class="PUNC">]</span><span class="PUNC">+</span><span class="NAME">padding</span><span class="PUNC">[</span><span class="NUMB">2</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="PUNC">*</span><span class="NAME">sizeRef</span><span class="WHIT">
+<span class='line'>370</span> </span><span class="WHIT">				</span><span class="PUNC">-</span><span class="NAME">spacing</span><span class="PUNC">[</span><span class="STRN">"border-right"</span><span class="PUNC">]</span><span class="WHIT">
+<span class='line'>371</span> </span><span class="WHIT">				</span><span class="PUNC">-</span><span class="NAME">spacing</span><span class="PUNC">[</span><span class="STRN">"border-bottom"</span><span class="PUNC">]</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>372</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>373</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">contentGeo</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>374</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>375</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>376</span> 	 * Called just after the block has been resized. 
+<span class='line'>377</span> 	 * The method is invoked by the jBlocks core and must never be called directly.
+<span class='line'>378</span> 	 * @name Block#onResize
+<span class='line'>379</span> 	 * @function
+<span class='line'>380</span> 	 * @param {Object} geometry the new block content geometry.
+<span class='line'>381</span> 	 * @param {Number} geometry.width the width of the block content in pixels
+<span class='line'>382</span> 	 * @param {Number} geometry.height the height of the block content in pixels
+<span class='line'>383</span> 	 */</span><span class="WHIT">
+<span class='line'>384</span> </span><span class="WHIT">	</span><span class="NAME">onResize</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">geometry</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>385</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">contentGeo</span><span class="PUNC">=</span><span class="NAME">this.getContentGeometry</span><span class="PUNC">(</span><span class="NAME">geometry</span><span class="PUNC">,</span><span class="NAME">this.jBlocks.geometry.uWidth</span><span class="PUNC">,</span><span class="NAME">this.jBlocks.geometry.uHeight</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>386</span> 
+<span class='line'>387</span> </span><span class="WHIT">		</span><span class="COMM">//$.jBlocks("log","contentGeo",geometry);</span><span class="WHIT">
+<span class='line'>388</span> </span><span class="WHIT">		</span><span class="NAME">this.content.width</span><span class="PUNC">(</span><span class="NAME">contentGeo.width</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>389</span> </span><span class="WHIT">		</span><span class="NAME">this.content.height</span><span class="PUNC">(</span><span class="NAME">contentGeo.height</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>390</span> </span><span class="WHIT">		</span><span class="NAME">this.content.css</span><span class="PUNC">(</span><span class="STRN">"border-radius"</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>391</span> </span><span class="WHIT">				</span><span class="NAME">contentGeo.sizeRef</span><span class="PUNC">*</span><span class="NAME">this.options.contentBorderRadius</span><span class="PUNC">+</span><span class="STRN">"px"</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>392</span> </span><span class="WHIT">		</span><span class="NAME">this.anchor.css</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>393</span> </span><span class="WHIT">			</span><span class="STRN">"margin-top"</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">contentGeo.spacing</span><span class="PUNC">[</span><span class="STRN">"margin-top"</span><span class="PUNC">]</span><span class="PUNC">+</span><span class="STRN">"px"</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>394</span> </span><span class="WHIT">			</span><span class="STRN">"margin-bottom"</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">contentGeo.spacing</span><span class="PUNC">[</span><span class="STRN">"margin-bottom"</span><span class="PUNC">]</span><span class="PUNC">+</span><span class="STRN">"px"</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>395</span> </span><span class="WHIT">			</span><span class="STRN">"margin-left"</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">contentGeo.spacing</span><span class="PUNC">[</span><span class="STRN">"margin-left"</span><span class="PUNC">]</span><span class="PUNC">+</span><span class="STRN">"px"</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>396</span> </span><span class="WHIT">			</span><span class="STRN">"margin-right"</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">contentGeo.spacing</span><span class="PUNC">[</span><span class="STRN">"margin-right"</span><span class="PUNC">]</span><span class="PUNC">+</span><span class="STRN">"px"</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>397</span> </span><span class="WHIT">			</span><span class="STRN">"padding-top"</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">contentGeo.spacing</span><span class="PUNC">[</span><span class="STRN">"padding-top"</span><span class="PUNC">]</span><span class="PUNC">+</span><span class="STRN">"px"</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>398</span> </span><span class="WHIT">			</span><span class="STRN">"padding-bottom"</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">contentGeo.spacing</span><span class="PUNC">[</span><span class="STRN">"padding-bottom"</span><span class="PUNC">]</span><span class="PUNC">+</span><span class="STRN">"px"</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>399</span> </span><span class="WHIT">			</span><span class="STRN">"padding-left"</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">contentGeo.spacing</span><span class="PUNC">[</span><span class="STRN">"padding-left"</span><span class="PUNC">]</span><span class="PUNC">+</span><span class="STRN">"px"</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>400</span> </span><span class="WHIT">			</span><span class="STRN">"padding-right"</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">contentGeo.spacing</span><span class="PUNC">[</span><span class="STRN">"padding-right"</span><span class="PUNC">]</span><span class="PUNC">+</span><span class="STRN">"px"</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>401</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>402</span> </span><span class="WHIT">		</span><span class="NAME">this.anchor.width</span><span class="PUNC">(</span><span class="NAME">contentGeo.width</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>403</span> </span><span class="WHIT">		</span><span class="NAME">this.anchor.height</span><span class="PUNC">(</span><span class="NAME">contentGeo.height</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>404</span> </span><span class="WHIT">		</span><span class="NAME">this.anchor.css</span><span class="PUNC">(</span><span class="STRN">"border-radius"</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>405</span> </span><span class="WHIT">				</span><span class="NAME">contentGeo.sizeRef</span><span class="PUNC">*</span><span class="NAME">this.options.borderRadius</span><span class="PUNC">+</span><span class="STRN">"px"</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>406</span> </span><span class="WHIT">		</span><span class="NAME">this.captMask.width</span><span class="PUNC">(</span><span class="NAME">this.anchor.outerWidth</span><span class="PUNC">(</span><span class="KEYW">false</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>407</span> </span><span class="WHIT">				</span><span class="PUNC">-</span><span class="NAME">contentGeo.spacing</span><span class="PUNC">[</span><span class="STRN">"border-left"</span><span class="PUNC">]</span><span class="PUNC">-</span><span class="NAME">contentGeo.spacing</span><span class="PUNC">[</span><span class="STRN">"border-right"</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>408</span> </span><span class="WHIT">		</span><span class="NAME">this.captMask.height</span><span class="PUNC">(</span><span class="NAME">this.anchor.outerHeight</span><span class="PUNC">(</span><span class="KEYW">false</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>409</span> </span><span class="WHIT">				</span><span class="PUNC">-</span><span class="NAME">contentGeo.spacing</span><span class="PUNC">[</span><span class="STRN">"border-top"</span><span class="PUNC">]</span><span class="PUNC">-</span><span class="NAME">contentGeo.spacing</span><span class="PUNC">[</span><span class="STRN">"border-bottom"</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>410</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">this.options.capture</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>411</span> </span><span class="WHIT">			</span><span class="NAME">this.captMask.show</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>412</span> </span><span class="WHIT">		</span><span class="KEYW">else</span><span class="WHIT">
+<span class='line'>413</span> </span><span class="WHIT">			</span><span class="NAME">this.captMask.hide</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>414</span> </span><span class="WHIT">		</span><span class="NAME">this.options.onResize.call</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">,</span><span class="NAME">contentGeo</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>415</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">blockShadow</span><span class="PUNC">=</span><span class="NAME">this.jBlocks.options.blockShadow</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>416</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="KEYW">typeof</span><span class="WHIT"> </span><span class="NAME">this.options.shadow</span><span class="PUNC">!=</span><span class="STRN">"undefined"</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>417</span> </span><span class="WHIT">			</span><span class="NAME">blockShadow</span><span class="PUNC">=</span><span class="NAME">this.options.shadow</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>418</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">blockShadow</span><span class="PUNC">!=</span><span class="NUMB">0</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>419</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">shadowW</span><span class="PUNC">=</span><span class="NAME">this.jBlocks.geometry.uWidth</span><span class="PUNC">*</span><span class="NAME">blockShadow</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>420</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">shadowH</span><span class="PUNC">=</span><span class="NAME">this.jBlocks.geometry.uHeight</span><span class="PUNC">*</span><span class="NAME">blockShadow</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>421</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">blur</span><span class="PUNC">=</span><span class="NAME">contentGeo.sizeRef</span><span class="PUNC">*</span><span class="NAME">blockShadow</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>422</span> </span><span class="WHIT">			</span><span class="NAME">this.anchor.css</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>423</span> </span><span class="WHIT">				</span><span class="STRN">"-webkit-box-shadow"</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">"-"</span><span class="PUNC">+</span><span class="NAME">shadowW</span><span class="PUNC">+</span><span class="STRN">"px "</span><span class="PUNC">+</span><span class="NAME">shadowH</span><span class="PUNC">+</span><span class="STRN">"px "</span><span class="PUNC">+</span><span class="PUNC">(</span><span class="NAME">blur</span><span class="PUNC">*</span><span class="NUMB">2.5</span><span class="PUNC">)</span><span class="PUNC">+</span><span class="STRN">"px rgba(43, 45, 50, 0.55)"</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>424</span> </span><span class="WHIT">				</span><span class="STRN">"box-shadow"</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">"-"</span><span class="PUNC">+</span><span class="NAME">shadowW</span><span class="PUNC">+</span><span class="STRN">"px "</span><span class="PUNC">+</span><span class="NAME">shadowH</span><span class="PUNC">+</span><span class="STRN">"px "</span><span class="PUNC">+</span><span class="PUNC">(</span><span class="NAME">blur</span><span class="PUNC">*</span><span class="NUMB">2.5</span><span class="PUNC">)</span><span class="PUNC">+</span><span class="STRN">"px rgba(43, 45, 50, 0.55)"</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>425</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>426</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>427</span> </span><span class="WHIT">		</span><span class="NAME">this.display</span><span class="PUNC">(</span><span class="NAME">contentGeo</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>428</span> </span><span class="WHIT">		</span><span class="COMM">/*
+<span class='line'>429</span> 		if(this.options.autoFit)
+<span class='line'>430</span> 			this.fit();
+<span class='line'>431</span> 		*/</span><span class="WHIT">
+<span class='line'>432</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>433</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>434</span> 	 * Called to display the block. 
+<span class='line'>435</span> 	 * The method is invoked by the jBlocks core and must never be called directly.
+<span class='line'>436</span> 	 * @name Block#display
+<span class='line'>437</span> 	 * @function
+<span class='line'>438</span> 	 * @param {Object} geometry the block content geometry.
+<span class='line'>439</span> 	 * @param {Number} geometry.width the width of the block content in pixels
+<span class='line'>440</span> 	 * @param {Number} geometry.height the height of the block content in pixels
+<span class='line'>441</span> 	 */</span><span class="WHIT">
+<span class='line'>442</span> </span><span class="WHIT">	</span><span class="NAME">display</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">geometry</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>443</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>444</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>445</span> 	 * Called when the user logs in. 
+<span class='line'>446</span> 	 * The method is invoked by the jBlocks core and must never be called directly.
+<span class='line'>447</span> 	 * @name Block#onLoggedIn
+<span class='line'>448</span> 	 * @function
+<span class='line'>449</span> 	 * @param {Object} user the user description.
+<span class='line'>450</span> 	 * @param {String} user.id the user ID.
+<span class='line'>451</span> 	 * @param {String} user.name the user name.
+<span class='line'>452</span> 	 * @param {String} user.picture the URL to the user avatar.
+<span class='line'>453</span> 	 * @param {String} user.mail the user email address.
+<span class='line'>454</span> 	 * @param {String} user.country the user country.
+<span class='line'>455</span> 	 * @see Block#onLoggedOut
+<span class='line'>456</span> 	 */</span><span class="WHIT">
+<span class='line'>457</span> </span><span class="WHIT">	</span><span class="NAME">onLoggedIn</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">user</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>458</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">this.options.requireAuth</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="NAME">this.layout.visible</span><span class="PUNC">==</span><span class="KEYW">false</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>459</span> </span><span class="WHIT">			</span><span class="NAME">this.layout.visible</span><span class="PUNC">=</span><span class="KEYW">true</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>460</span> </span><span class="WHIT">			</span><span class="NAME">this.jBlocks.checkLayout</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>461</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>462</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">this.options.requireAnon</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="NAME">this.layout.visible</span><span class="PUNC">==</span><span class="KEYW">true</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>463</span> </span><span class="WHIT">			</span><span class="NAME">this.layout.visible</span><span class="PUNC">=</span><span class="KEYW">false</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>464</span> </span><span class="WHIT">			</span><span class="NAME">this.jBlocks.checkLayout</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>465</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>466</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">this.onLoggedInCallback</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>467</span> </span><span class="WHIT">			</span><span class="NAME">this.onLoggedInCallback</span><span class="PUNC">(</span><span class="NAME">user</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>468</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>469</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>470</span> 	 * Called when the user logs out. 
+<span class='line'>471</span> 	 * The method is invoked by the jBlocks core and must never be called directly.
+<span class='line'>472</span> 	 * @name Block#onLoggedOut
+<span class='line'>473</span> 	 * @function
+<span class='line'>474</span> 	 * @see Block#onLoggedIn
+<span class='line'>475</span> 	 */</span><span class="WHIT">
+<span class='line'>476</span> </span><span class="WHIT">	</span><span class="NAME">onLoggedOut</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">user</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>477</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">this.options.requireAuth</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="NAME">this.layout.visible</span><span class="PUNC">==</span><span class="KEYW">true</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>478</span> </span><span class="WHIT">			</span><span class="NAME">this.layout.visible</span><span class="PUNC">=</span><span class="KEYW">false</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>479</span> </span><span class="WHIT">			</span><span class="NAME">this.jBlocks.checkLayout</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>480</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>481</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">this.options.requireAnon</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="NAME">this.layout.visible</span><span class="PUNC">==</span><span class="KEYW">false</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>482</span> </span><span class="WHIT">			</span><span class="NAME">this.layout.visible</span><span class="PUNC">=</span><span class="KEYW">true</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>483</span> </span><span class="WHIT">			</span><span class="NAME">this.jBlocks.checkLayout</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>484</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>485</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">this.onLoggedOutCallback</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>486</span> </span><span class="WHIT">			</span><span class="NAME">this.onLoggedOutCallback</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>487</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>488</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>489</span> 	 * Check fullscreen availability. 
+<span class='line'>490</span> 	 * @name Block#canFullScreen
+<span class='line'>491</span> 	 * @function
+<span class='line'>492</span> 	 * @type Boolean
+<span class='line'>493</span> 	 * @returns Whether the browser supports fullscreen
+<span class='line'>494</span> 	 */</span><span class="WHIT">
+<span class='line'>495</span> </span><span class="WHIT">	</span><span class="NAME">canFullscreen</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>496</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.jBlocks.fullscreenMethods</span><span class="PUNC">!=</span><span class="KEYW">null</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>497</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>498</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>499</span> 	 * Make fullscreen the block content or part of it. 
+<span class='line'>500</span> 	 * @name Block#fullscreen
+<span class='line'>501</span> 	 * @function
+<span class='line'>502</span> 	 * @param {jQuerySet} [widget] the element to make fullscreen. If omitted, &lt;i>this.content&lt;/i> is used.
+<span class='line'>503</span> 	 * @param {Function} function(entering) to be called when fullscreen is entered or exited.
+<span class='line'>504</span> 	 */</span><span class="WHIT">
+<span class='line'>505</span> </span><span class="WHIT">	</span><span class="NAME">fullscreen</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">widget</span><span class="PUNC">,</span><span class="NAME">updateFnt</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>506</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">arguments.length</span><span class="PUNC">&lt;</span><span class="NUMB">1</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="PUNC">!</span><span class="NAME">widget</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>507</span> </span><span class="WHIT">			</span><span class="NAME">widget</span><span class="PUNC">=</span><span class="NAME">this.content</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>508</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">arguments.length</span><span class="PUNC">&lt;</span><span class="NUMB">2</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="PUNC">!</span><span class="NAME">updateFnt</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>509</span> </span><span class="WHIT">			</span><span class="NAME">udateFnt</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>510</span> </span><span class="WHIT">		</span><span class="NAME">this.jBlocks.fullscreen</span><span class="PUNC">(</span><span class="NAME">widget</span><span class="PUNC">,</span><span class="NAME">updateFnt</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>511</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>512</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>513</span> 	 * Log data.
+<span class='line'>514</span> 	 * @name Block#log
+<span class='line'>515</span> 	 * @function
+<span class='line'>516</span> 	 * @see JBlocks.log
+<span class='line'>517</span> 	 * @param {Stringifiable object|String} ... 
+<span class='line'>518</span> 	 */</span><span class="WHIT">
+<span class='line'>519</span> </span><span class="WHIT">	</span><span class="NAME">log</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>520</span> </span><span class="WHIT">		</span><span class="NAME">$.jBlocks.apply</span><span class="PUNC">(</span><span class="KEYW">null</span><span class="PUNC">,</span><span class="PUNC">[</span><span class="STRN">"log"</span><span class="PUNC">]</span><span class="PUNC">.</span><span class="NAME">concat</span><span class="PUNC">(</span><span class="PUNC">[</span><span class="PUNC">]</span><span class="PUNC">.</span><span class="NAME">splice.call</span><span class="PUNC">(</span><span class="NAME">arguments</span><span class="PUNC">,</span><span class="NUMB">0</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>521</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>522</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>523</span> 	 * Generates a translated string based on the given string tag and optional placeholders.
+<span class='line'>524</span> 	 * @function
+<span class='line'>525</span> 	 * @name Block#t
+<span class='line'>526</span> 	 * @param {String} tag the string tag identifying the text to be be returned.
+<span class='line'>527</span> 	 * @param {Object} [placeHolders] an object containing the placeholders and corresponding values to be replaced in the returned text.
+<span class='line'>528</span> 	 * @returns the full text to be used in the interface or the string tag itself if no translation has been found for this tag.  
+<span class='line'>529</span> 	 * @see JBlocks.addTranslation
+<span class='line'>530</span> 	 */</span><span class="WHIT">
+<span class='line'>531</span> </span><span class="WHIT">	</span><span class="NAME">t</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>532</span> </span><span class="WHIT">		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">$.jBlocks.apply</span><span class="PUNC">(</span><span class="KEYW">null</span><span class="PUNC">,</span><span class="PUNC">[</span><span class="STRN">"translate"</span><span class="PUNC">]</span><span class="PUNC">.</span><span class="NAME">concat</span><span class="PUNC">(</span><span class="PUNC">[</span><span class="PUNC">]</span><span class="PUNC">.</span><span class="NAME">splice.call</span><span class="PUNC">(</span><span class="NAME">arguments</span><span class="PUNC">,</span><span class="NUMB">0</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>533</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>534</span> 
+<span class='line'>535</span> </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="COMM">//.blockIndex=0;</span><span class="WHIT">
+<span class='line'>536</span> </span></pre></body></html>

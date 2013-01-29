@@ -1,0 +1,77 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>jBlocks Demo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes">
+<script src="http://code.jquery.com/jquery-1.9.0.min.js"></script>
+<script type="text/javascript" src="jblocks.min.js"></script>
+<link rel="stylesheet" type="text/css" href="jblocks.css">
+
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+
+$(document).ready(function() {
+	var jBlocks=$("#jblocks-anchor").jBlocks();
+	jBlocks.updateOptions({
+		scrollable: true,
+		margin: [.20,.16,.20,.24],
+		blockShadow: 0.05,
+		onResize: function(geometry,viewport) {
+			this.updateViewportFromGeometry(geometry,viewport,{
+				pixels: 50,
+				minw: 6,
+				maxw: 40,
+				minh: 6,
+				maxh: 24,
+			});
+		},
+	});
+
+	for(var i=0;i<20;i++) {
+		(function(index) {
+			jBlocks.addNewBlock("Text",{
+					h: 2+Math.floor(Math.random()*3),
+					w: 2+Math.floor(Math.random()*3),
+				},{
+				text: "Block "+index,
+				verticalAlign: true,
+				blockContentClass: "jblocks-centered",
+				onCreate: function() {
+					var r=Math.floor(Math.random()*256);
+					var g=Math.floor(Math.random()*256);
+					var b=Math.floor(Math.random()*256);
+					this.anchor.css("background-color","rgba("+r+","+g+","+b+",0.5)");
+				}
+			});
+		})(i);
+	}
+	
+	// optional if dynamic resizing is required
+	$(window).bind('orientationchange resize',function(event){
+		jBlocks.updateSize();
+	});
+
+});
+                  
+//--><!]]>
+</script>
+<style type="text/css">
+body {
+	background-color: #ffffdd;
+}
+h1 {
+	text-align: center;
+}
+#jblocks-anchor {
+	background-color: White;
+	width: 80%;
+	height: 80%;
+	margin: 20px auto;
+}
+</style>
+</head>
+<body>
+	<h1>jBlocks running inside a DIV</h1>
+	<div id="jblocks-anchor"></div>
+</body>
+</html>

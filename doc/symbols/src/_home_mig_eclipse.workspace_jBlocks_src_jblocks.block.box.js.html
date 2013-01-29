@@ -1,0 +1,212 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"> <style>
+	.KEYW {color: #933;}
+	.COMM {color: #bbb; font-style: italic;}
+	.NUMB {color: #393;}
+	.STRN {color: #393;}
+	.REGX {color: #339;}
+	.line {border-right: 1px dotted #666; color: #666; font-style: normal;}
+	</style></head><body><pre><span class='line'>  1</span> <span class="COMM">/* This Source Code Form is subject to the terms of the Mozilla Public
+<span class='line'>  2</span>  * License, v. 2.0. If a copy of the MPL was not distributed with this
+<span class='line'>  3</span>  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */</span><span class="WHIT">
+<span class='line'>  4</span> 
+<span class='line'>  5</span> </span><span class="COMM">/**
+<span class='line'>  6</span>  * @author mig &lt;michel.gutierrez@gmail.com>
+<span class='line'>  7</span>  * @version 0.1
+<span class='line'>  8</span>  * @module jBlocks 
+<span class='line'>  9</span>  * @overview Javascript library for automatic responsive design oriented layouts. 
+<span class='line'> 10</span>  */</span><span class="WHIT">
+<span class='line'> 11</span> 
+<span class='line'> 12</span> </span><span class="COMM">/**
+<span class='line'> 13</span>  * &lt;p>A Box block holds a header with title and menu. The class must be overloaded to add content.&lt;/p>
+<span class='line'> 14</span>  * &lt;p>The constructor should not be invoked directly but {@link JBlocks#newBlock} or {@link JBlocks#addNewBlock} should be used instead.&lt;/p>
+<span class='line'> 15</span>  * @name Box
+<span class='line'> 16</span>  * @class Define a Box block to be displayed into a JBlocks.
+<span class='line'> 17</span>  * @augments JBlock
+<span class='line'> 18</span>  */</span><span class="WHIT">
+<span class='line'> 19</span> </span><span class="NAME">$.jBlocks</span><span class="PUNC">(</span><span class="STRN">"defineBlockClass"</span><span class="PUNC">,</span><span class="STRN">"Box"</span><span class="PUNC">,</span><span class="STRN">"JBlock"</span><span class="PUNC">,</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 20</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'> 21</span> 	 * Initializes a Box block.
+<span class='line'> 22</span> 	 * The method is invoked by the jBlocks core and must never be called directly.
+<span class='line'> 23</span> 	 * @name Box#init
+<span class='line'> 24</span> 	 * @function
+<span class='line'> 25</span> 	 * @param {Object} [layout] see {@link Block#init}.
+<span class='line'> 26</span> 	 * @param {Object} [options] in addition to base class options {@link JBlock#init}:
+<span class='line'> 27</span> 	 * @param {Array} [options.title] the title to appear in the Box header.
+<span class='line'> 28</span> 	 * @param {Boolean} [options.haveClose=false] have an icon to close the block.
+<span class='line'> 29</span> 	 * @param {Boolean} [options.haveFullscreen=false] have a Fullscreen entry in the menu.
+<span class='line'> 30</span> 	 * @param {Boolean} [options.haveSearch=false] have a icon to search.
+<span class='line'> 31</span> 	 * @param {Array} [options.menuItems] additional menu items.
+<span class='line'> 32</span> 	 * @param {Function} [options.onSearchClick] additional function to be called when the search icon is clicked.
+<span class='line'> 33</span> 	 * @param {String} [options.closeIconClass="jblocks-icon-close"] class to be used for Close icon.
+<span class='line'> 34</span> 	 * @param {String} [options.shrinkIconClass="jblocks-icon-shrink"] class to be used for Shrink icon.
+<span class='line'> 35</span> 	 * @param {String} [options.growIconClass="jblocks-icon-grow"] class to be used for Grow icon.
+<span class='line'> 36</span> 	 * @param {String} [options.searchIconClass="jblocks-icon-search"] class to be used for Search icon.
+<span class='line'> 37</span> 	 * @param {String} [options.iconsBaseClass="jblocks-block-icon"] base class to be used for icons.
+<span class='line'> 38</span> 	 * @param {String} [options.focusOnTitleClick=true] focus block if title is clicked
+<span class='line'> 39</span> 	 */</span><span class="WHIT">
+<span class='line'> 40</span> </span><span class="WHIT">	</span><span class="NAME">init</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 41</span> </span><span class="WHIT">		</span><span class="NAME">this._super.apply</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">,</span><span class="NAME">arguments</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 42</span> </span><span class="WHIT">		</span><span class="NAME">this.options</span><span class="PUNC">=</span><span class="NAME">$.extend</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 43</span> </span><span class="WHIT">			</span><span class="NAME">title</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">""</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 44</span> </span><span class="WHIT">			</span><span class="NAME">focusOnTitleClick</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 45</span> </span><span class="WHIT">			</span><span class="NAME">haveClose</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">false</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 46</span> </span><span class="WHIT">			</span><span class="NAME">haveSearch</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">false</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 47</span> </span><span class="WHIT">			</span><span class="NAME">haveMaximize</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 48</span> </span><span class="WHIT">			</span><span class="NAME">haveFullscreen</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">false</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 49</span> </span><span class="WHIT">			</span><span class="NAME">closeIconClass</span><span class="PUNC">:</span><span class="STRN">"jblocks-icon-close"</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 50</span> </span><span class="WHIT">			</span><span class="NAME">shrinkIconClass</span><span class="PUNC">:</span><span class="STRN">"jblocks-icon-shrink"</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 51</span> </span><span class="WHIT">			</span><span class="NAME">growIconClass</span><span class="PUNC">:</span><span class="STRN">"jblocks-icon-grow"</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 52</span> </span><span class="WHIT">			</span><span class="NAME">searchIconClass</span><span class="PUNC">:</span><span class="STRN">"jblocks-icon-search"</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 53</span> </span><span class="WHIT">			</span><span class="NAME">iconsBaseClass</span><span class="PUNC">:</span><span class="STRN">"jblocks-block-icon"</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 54</span> </span><span class="WHIT">			</span><span class="NAME">menuItems</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">[</span><span class="PUNC">]</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 55</span> </span><span class="WHIT">			</span><span class="NAME">onSearchClick</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 56</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="NAME">this.options</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 57</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 58</span> </span><span class="WHIT">	</span><span class="NAME">onCreate</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 59</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">$this</span><span class="PUNC">=</span><span class="KEYW">this</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 60</span> </span><span class="WHIT">		</span><span class="NAME">this._super</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 61</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">_onResize</span><span class="PUNC">=</span><span class="NAME">this.selfJBlocks.options.onResize</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 62</span> </span><span class="WHIT">		</span><span class="NAME">this.selfJBlocks.options.onResize</span><span class="PUNC">=</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 63</span> </span><span class="WHIT">			</span><span class="NAME">_onResize.apply</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">,</span><span class="NAME">arguments</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 64</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">$this.options.layouts</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 65</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">$this.canGrow</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'> 66</span> </span><span class="WHIT">					</span><span class="NAME">$this.growIcon.layout.visible</span><span class="PUNC">=</span><span class="KEYW">true</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 67</span> </span><span class="WHIT">				</span><span class="KEYW">else</span><span class="WHIT">
+<span class='line'> 68</span> </span><span class="WHIT">					</span><span class="NAME">$this.growIcon.layout.visible</span><span class="PUNC">=</span><span class="KEYW">false</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 69</span> </span><span class="WHIT">				</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">$this.canShrink</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'> 70</span> </span><span class="WHIT">					</span><span class="NAME">$this.shrinkIcon.layout.visible</span><span class="PUNC">=</span><span class="KEYW">true</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 71</span> </span><span class="WHIT">				</span><span class="KEYW">else</span><span class="WHIT">
+<span class='line'> 72</span> </span><span class="WHIT">					</span><span class="NAME">$this.shrinkIcon.layout.visible</span><span class="PUNC">=</span><span class="KEYW">false</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 73</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 74</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 75</span> </span><span class="WHIT">		</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">menuItems</span><span class="PUNC">=</span><span class="PUNC">[</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 76</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">this.options.haveFullscreen</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'> 77</span> </span><span class="WHIT">			</span><span class="NAME">menuItems.push</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 78</span> </span><span class="WHIT">            	</span><span class="NAME">label</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">this.t</span><span class="PUNC">(</span><span class="STRN">"fullscreen"</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 79</span> </span><span class="WHIT">            	</span><span class="NAME">onClick</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 80</span> </span><span class="WHIT">            		</span><span class="NAME">this.layout.visible</span><span class="PUNC">=</span><span class="KEYW">false</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 81</span> </span><span class="WHIT">            		</span><span class="NAME">$this.fullscreen</span><span class="PUNC">(</span><span class="NAME">$this.selfJBlocks.anchor</span><span class="PUNC">,</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">entering</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 82</span> </span><span class="WHIT">            			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">entering</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'> 83</span> </span><span class="WHIT">            				</span><span class="NAME">$this.maximize</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 84</span> </span><span class="WHIT">            			</span><span class="KEYW">else</span><span class="WHIT">
+<span class='line'> 85</span> </span><span class="WHIT">            				</span><span class="NAME">$this.unMaximize</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 86</span> </span><span class="WHIT">        				</span><span class="NAME">$</span><span class="PUNC">(</span><span class="NAME">window</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">trigger</span><span class="PUNC">(</span><span class="STRN">'resize'</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 87</span> </span><span class="WHIT">            		</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 88</span> </span><span class="WHIT">            	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 89</span> </span><span class="WHIT">            	</span><span class="NAME">shouldDisplay</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 90</span> </span><span class="WHIT">            		</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">$this.canFullscreen</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 91</span> </span><span class="WHIT">            	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 92</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 93</span> </span><span class="WHIT">		</span><span class="KEYW">for</span><span class="PUNC">(</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">i</span><span class="WHIT"> </span><span class="KEYW">in</span><span class="WHIT"> </span><span class="NAME">this.options.menuItems</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'> 94</span> </span><span class="WHIT">			</span><span class="NAME">menuItems.push</span><span class="PUNC">(</span><span class="NAME">this.options.menuItems</span><span class="PUNC">[</span><span class="NAME">i</span><span class="PUNC">]</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 95</span> </span><span class="WHIT">		
+<span class='line'> 96</span> 		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">menuItems.length</span><span class="PUNC">></span><span class="NUMB">0</span><span class="PUNC">)</span><span class="WHIT"> 
+<span class='line'> 97</span> 			</span><span class="NAME">this.selfJBlocks.addNewBlock</span><span class="PUNC">(</span><span class="STRN">"MenuIcon"</span><span class="PUNC">,</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 98</span> </span><span class="WHIT">					</span><span class="NAME">priority</span><span class="PUNC">:</span><span class="NUMB">1003</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 99</span> </span><span class="WHIT">					</span><span class="NAME">pref</span><span class="PUNC">:</span><span class="STRN">"top left"</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>100</span> </span><span class="WHIT">					</span><span class="NAME">h</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NUMB">1</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>101</span> </span><span class="WHIT">					</span><span class="NAME">w</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NUMB">1</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>102</span> </span><span class="WHIT">					</span><span class="NAME">expandHeight</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>103</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>104</span> </span><span class="WHIT">					</span><span class="NAME">onClick</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="NAME">alert</span><span class="PUNC">(</span><span class="STRN">"Open menu"</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>105</span> </span><span class="WHIT">					</span><span class="NAME">menuItems</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">menuItems</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>106</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>107</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">this.options.haveClose</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>108</span> </span><span class="WHIT">			</span><span class="NAME">this.selfJBlocks.addNewBlock</span><span class="PUNC">(</span><span class="STRN">"Icon"</span><span class="PUNC">,</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>109</span> </span><span class="WHIT">					</span><span class="NAME">priority</span><span class="PUNC">:</span><span class="NUMB">1002</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>110</span> </span><span class="WHIT">					</span><span class="NAME">pref</span><span class="PUNC">:</span><span class="STRN">"top left"</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>111</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>112</span> </span><span class="WHIT">					</span><span class="NAME">iconClass</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">this.options.iconsBaseClass</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>113</span> </span><span class="WHIT">					</span><span class="NAME">blockContentClass</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">this.options.closeIconClass</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>114</span> </span><span class="WHIT">					</span><span class="NAME">onClick</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>115</span> </span><span class="WHIT">						</span><span class="NAME">$this.unMaximize</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>116</span> </span><span class="WHIT">						</span><span class="NAME">$this.jBlocks.removeBlock</span><span class="PUNC">(</span><span class="NAME">$this.id</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>117</span> </span><span class="WHIT">					</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>118</span> </span><span class="WHIT">					</span><span class="NAME">tooltip</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">this.t</span><span class="PUNC">(</span><span class="STRN">'close'</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>119</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>120</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>121</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">this.options.haveSearch</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>122</span> </span><span class="WHIT">			</span><span class="NAME">this.selfJBlocks.addNewBlock</span><span class="PUNC">(</span><span class="STRN">"Icon"</span><span class="PUNC">,</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>123</span> </span><span class="WHIT">					</span><span class="NAME">priority</span><span class="PUNC">:</span><span class="NUMB">1001</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>124</span> </span><span class="WHIT">					</span><span class="NAME">pref</span><span class="PUNC">:</span><span class="STRN">"top right"</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>125</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>126</span> </span><span class="WHIT">					</span><span class="NAME">iconClass</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">this.options.iconsBaseClass</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>127</span> </span><span class="WHIT">					</span><span class="NAME">blockContentClass</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">this.options.searchIconClass</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>128</span> </span><span class="WHIT">					</span><span class="NAME">onClick</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>129</span> </span><span class="WHIT">						</span><span class="NAME">$this.options.onSearchClick.apply</span><span class="PUNC">(</span><span class="NAME">$this</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>130</span> </span><span class="WHIT">					</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>131</span> </span><span class="WHIT">					</span><span class="NAME">tooltip</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">this.t</span><span class="PUNC">(</span><span class="STRN">'search'</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>132</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>133</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">this.options.layouts</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>134</span> </span><span class="WHIT">			</span><span class="NAME">this.growIcon</span><span class="PUNC">=</span><span class="NAME">this.selfJBlocks.addNewBlock</span><span class="PUNC">(</span><span class="STRN">"Icon"</span><span class="PUNC">,</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>135</span> </span><span class="WHIT">				</span><span class="NAME">priority</span><span class="PUNC">:</span><span class="NUMB">1001</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>136</span> </span><span class="WHIT">				</span><span class="NAME">pref</span><span class="PUNC">:</span><span class="STRN">"top right"</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>137</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>138</span> </span><span class="WHIT">				</span><span class="NAME">iconClass</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">this.options.iconsBaseClass</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>139</span> </span><span class="WHIT">				</span><span class="NAME">blockContentClass</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">this.options.growIconClass</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>140</span> </span><span class="WHIT">				</span><span class="NAME">onClick</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>141</span> </span><span class="WHIT">					</span><span class="NAME">$this.grow</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>142</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>143</span> </span><span class="WHIT">				</span><span class="NAME">tooltip</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">this.t</span><span class="PUNC">(</span><span class="STRN">'grow'</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>144</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>145</span> </span><span class="WHIT">			</span><span class="NAME">this.shrinkIcon</span><span class="PUNC">=</span><span class="NAME">this.selfJBlocks.addNewBlock</span><span class="PUNC">(</span><span class="STRN">"Icon"</span><span class="PUNC">,</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>146</span> </span><span class="WHIT">				</span><span class="NAME">priority</span><span class="PUNC">:</span><span class="NUMB">1001</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>147</span> </span><span class="WHIT">				</span><span class="NAME">pref</span><span class="PUNC">:</span><span class="STRN">"top right"</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>148</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>149</span> </span><span class="WHIT">				</span><span class="NAME">iconClass</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">this.options.iconsBaseClass</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>150</span> </span><span class="WHIT">				</span><span class="NAME">blockContentClass</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">this.options.shrinkIconClass</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>151</span> </span><span class="WHIT">				</span><span class="NAME">onClick</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>152</span> </span><span class="WHIT">					</span><span class="NAME">$this.shrink</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>153</span> </span><span class="WHIT">				</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>154</span> </span><span class="WHIT">				</span><span class="NAME">tooltip</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">this.t</span><span class="PUNC">(</span><span class="STRN">'shrink'</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>155</span> </span><span class="WHIT">			</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>156</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>157</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">txt</span><span class="PUNC">=</span><span class="NAME">this.selfJBlocks.addNewBlock</span><span class="PUNC">(</span><span class="STRN">"Text"</span><span class="PUNC">,</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>158</span> </span><span class="WHIT">    			</span><span class="NAME">h</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NUMB">1</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>159</span> </span><span class="WHIT">    			</span><span class="NAME">w</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NUMB">2</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>160</span> </span><span class="WHIT">    			</span><span class="NAME">priority</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NUMB">1000</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>161</span> </span><span class="WHIT">    			</span><span class="NAME">expandWidth</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NUMB">10</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>162</span> </span><span class="WHIT">    			</span><span class="NAME">expandHeight</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>163</span> </span><span class="WHIT">        	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>164</span> </span><span class="WHIT">        		</span><span class="NAME">containerTag</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">"h1"</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>165</span> </span><span class="WHIT">        		</span><span class="NAME">text</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NAME">this.options.title</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>166</span> </span><span class="WHIT">        	</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>167</span> </span><span class="WHIT">        </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">this.options.focusOnTitleClick</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>168</span> </span><span class="WHIT">        	</span><span class="NAME">txt.content.bind</span><span class="PUNC">(</span><span class="STRN">'click'</span><span class="PUNC">,</span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>169</span> </span><span class="WHIT">        		</span><span class="NAME">$this.focus</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>170</span> </span><span class="WHIT">        		</span><span class="NAME">$this.jBlocks.checkLayout</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>171</span> </span><span class="WHIT">        	</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>172</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>173</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>174</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'>175</span> 	 * This method is to be used when the Box block is intended to have a single block as content. A new block is created, eventually replacing a former content block.
+<span class='line'>176</span> 	 * @name Box#setContent
+<span class='line'>177</span> 	 * @function
+<span class='line'>178</span> 	 * @param {String} className the name of the class for the content block.
+<span class='line'>179</span> 	 * @param {Object} [options] options for the new block. The options parameters depends on the actual block class.
+<span class='line'>180</span> 	 * @returns the newly created block.
+<span class='line'>181</span> 	 */</span><span class="WHIT">
+<span class='line'>182</span> </span><span class="WHIT">	</span><span class="NAME">setContent</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">className</span><span class="PUNC">,</span><span class="NAME">options</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>183</span> </span><span class="WHIT">		</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">arguments.length</span><span class="PUNC">&lt;</span><span class="NUMB">2</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>184</span> </span><span class="WHIT">			</span><span class="NAME">options</span><span class="PUNC">=</span><span class="PUNC">{</span><span class="PUNC">}</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>185</span> </span><span class="WHIT">		</span><span class="KEYW">for</span><span class="PUNC">(</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">bi</span><span class="WHIT"> </span><span class="KEYW">in</span><span class="WHIT"> </span><span class="NAME">this.selfJBlocks.blocks</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>186</span> </span><span class="WHIT">			</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">block</span><span class="PUNC">=</span><span class="NAME">this.selfJBlocks.blocks</span><span class="PUNC">[</span><span class="NAME">bi</span><span class="PUNC">]</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>187</span> </span><span class="WHIT">			</span><span class="KEYW">if</span><span class="PUNC">(</span><span class="NAME">block._isBoxContent</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>188</span> </span><span class="WHIT">				</span><span class="NAME">this.selfJBlocks.removeBlock</span><span class="PUNC">(</span><span class="NAME">block.id</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>189</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>190</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">newBlock</span><span class="PUNC">=</span><span class="NAME">this.selfJBlocks.addNewBlock</span><span class="PUNC">(</span><span class="NAME">className</span><span class="PUNC">,</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>191</span> </span><span class="WHIT">    		</span><span class="NAME">w</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NUMB">1</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>192</span> </span><span class="WHIT">    		</span><span class="NAME">h</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NUMB">2</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>193</span> </span><span class="WHIT">    		</span><span class="NAME">pref</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">"right bottom"</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>194</span> </span><span class="WHIT">    		</span><span class="NAME">priority</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NUMB">999</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>195</span> </span><span class="WHIT">    		</span><span class="NAME">expandWidth</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NUMB">2</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>196</span> </span><span class="WHIT">    		</span><span class="NAME">expandHeight</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="NUMB">2</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>197</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="NAME">$.extend</span><span class="PUNC">(</span><span class="NAME">options</span><span class="PUNC">,</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>198</span> </span><span class="WHIT">        	</span><span class="NAME">boxBlock</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">this</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>199</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>200</span> </span><span class="WHIT">        </span><span class="NAME">newBlock._isBoxContent</span><span class="PUNC">=</span><span class="KEYW">true</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>201</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">newBlock</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>202</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>203</span> </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>204</span> 
+<span class='line'>205</span> </span></pre></body></html>
