@@ -1,0 +1,12 @@
+.project
+doc
+mkdoc.sh
+packsrc.sh
+README.html
+closure-compiler
+jsdoc-toolkit
+src.files.txt
+pages
+jblocks.unpack.js
+jblocks.min.js
+

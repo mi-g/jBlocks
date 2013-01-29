@@ -1,0 +1,249 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>jBlocks Demo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes">
+<script src="http://code.jquery.com/jquery-1.9.0.min.js"></script>
+<script type="text/javascript" src="jblocks.min.js"></script>
+<link rel="stylesheet" type="text/css" href="jblocks.css">
+<link rel="stylesheet" type="text/css" href="tinyscrollbar.css">
+
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+$.jBlocks("autoSyncContentSize");
+
+$.jBlocks("updateOptions",{
+	scrollable: true,
+	margin: [.10,.08,.10,.12],
+	blockShadow: 0.05,
+	blockClass: "jblocks-bg-grey",
+});
+
+$.jBlocks("addNewBlock","Box",{
+	h: 4,
+	w: 4,
+},{
+	title: "IFrame",
+	onCreate: function() {
+		this.setContent("IFrame",{
+			src: "demo2.html",			
+		});
+	},
+});
+
+$.jBlocks("addNewBlock","Box",{
+	h: 6,
+	w: 6,
+	expandWidth: 0,
+	expandHeight: 0,
+},{
+	title: "Box",
+	layouts: [{
+		w: 6,
+		h: 1,
+	},{
+		w: 6,
+		h: 6,		
+	},{
+		w: function(vp) { return vp.w; },
+		h: function(vp) { return vp.h; },
+	}],
+	layoutIndex: 1,
+	onCreate: function() {
+		this.setContent("Text",{
+			text: "This is a box",			
+		});
+	},
+	jBlocksBlockClass: "jblocks-block-orange",
+	haveClose: true,
+});
+
+$.jBlocks("addNewBlock","Box",{
+	h: 6,
+	w: 6,
+},{
+	title: "JBlock",
+	onCreate: function() {
+		this.setContent("JBlock",{
+			onCreate: function() {
+				var $this=this;
+				for(var i=0;i<10;i++) {
+					(function(index) {
+						$this.selfJBlocks.addNewBlock("Text",{
+								h: 2+Math.floor(Math.random()*3),
+								w: 2+Math.floor(Math.random()*3),
+							},{
+							verticalAlign: true,
+							blockContentClass: "jblocks-centered",
+							onCreate: function() {
+								var r=Math.floor(Math.random()*256);
+								var g=Math.floor(Math.random()*256);
+								var b=Math.floor(Math.random()*256);
+								this.anchor.css("background-color","rgba("+r+","+g+","+b+",0.5)");
+							}
+						});
+					})(i);
+				}
+			},
+		});
+	},
+});
+
+$.jBlocks("addNewBlock","JBlock",{
+	h: 6,
+	w: 4,
+},{
+	onCreate: function() {
+		this.selfJBlocks.updateViewport({
+			fixed: "width",
+		});
+		this.selfJBlocks.addNewBlock("Text",{
+				pref: "left top",
+			},{
+				text: "Select",
+			});
+		this.selfJBlocks.addNewBlock("Select",{
+			pref: "left top",
+			h: 3,
+		},{
+			items: [{
+				id: "id1",
+				label: "Item 1",
+			},{
+				id: "id2",
+				label: "Item 2",				
+			},{
+				id: "id3",
+				label: "Item 3",				
+			}],
+			createItem: function(item,li) {
+				li.text(item.label);
+				return item.id;
+			},
+			selected: "id1",
+		});
+		this.selfJBlocks.addNewBlock("Text",{
+			pref: "left top",
+		},{
+			text: "Input",
+		});
+		this.selfJBlocks.addNewBlock("Input",{
+			pref: "left top",
+		},{
+			onCR: function() {
+				alert("You typed "+this.val());
+				this.val("");
+			},
+		});
+		this.selfJBlocks.addNewBlock("Text",{
+			pref: "left top",
+		},{
+			text: "Checkbox",
+		});
+		this.selfJBlocks.addNewBlock("Checkbox",{
+			pref: "left top",
+		},{
+			text: "Checkbox label",
+			onChange: function(value) {
+				alert("Checked "+value);
+			},
+		});
+		
+	},
+});
+
+$.jBlocks("addNewBlock","Box",{
+	h: 4,
+	w: 4,
+},{
+	title: "List",
+	onCreate: function() {
+		this.setContent("List",{
+			onCreate: function() {
+				for(var i=0;i<20;i++) {
+					this.addItem({
+						id: i+1,
+						label: "List item "+i,
+					});
+				}
+			},
+			createItem: function(item,li) {
+				li.text(item.label);
+				return item.id;
+			},
+		});
+	},
+});
+
+$.jBlocks("addNewBlock","Box",{
+	h: 4,
+	w: 4,
+},{
+	title: "ScrollableHtml",
+	onCreate: function() {
+		this.setContent("ScrollableHtml",{
+			onCreate: function() {
+				this.getHtmlContainer().append("Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Typi non habent claritatem insitam; est usus legentis in iis qui facit eorum claritatem. Investigationes demonstraverunt lectores legere me lius quod ii legunt saepius. Claritas est etiam processus dynamicus, qui sequitur mutationem consuetudium lectorum. Mirum est notare quam littera gothica, quam nunc putamus parum claram, anteposuerit litterarum formas humanitatis per seacula quarta decima et quinta decima. Eodem modo typi, qui nunc nobis videntur parum clari, fiant sollemnes in futurum.");
+			},
+		});
+	},
+});
+
+$.jBlocks("addNewBlock","Box",{
+	h: 4,
+	w: 4,
+},{
+	title: "YouTubeVideo",
+	onCreate: function() {
+		this.setContent("YouTubeVideo",{
+			youtubeID: "9bZkp7q19f0",
+		});
+	},
+});
+
+$.jBlocks("addNewBlock","Text",{
+	h: 1,
+	w: 3,
+},{
+	text: "Text",
+});
+
+$.jBlocks("addNewBlock","Link",{
+	h: 1,
+	w: 3,
+},{
+	text: "Link",
+	onClick: function() {
+		alert("Clicked");
+	},
+});
+
+$.jBlocks("addNewBlock","HtmlElement",{
+	h: 1,
+	w: 3,
+},{
+	tag: "h1",
+	onCreate: function(value) {
+		this.element.text("HtmlElement");
+	},
+});
+
+$.jBlocks("addNewBlock","Icon",{
+},{
+	tooltip: "Icon",
+	blockContentClass: "jblocks-icon-search",
+	onCreate: function() {
+		this.anchor.css("background-color","#808080");
+	},
+	onClick: function() {
+		alert("You clicked an Icon block");
+	},
+});
+
+                  
+//--><!]]>
+</script>
+</head>
+<body style="background-color: #ffffdd;">
+</body>
+</html>

@@ -1,0 +1,65 @@
+.jb-scroll-list{
+    xmargin: 20px 0 10px;
+    width: 320px;
+}
+.jb-scroll-list .viewport {
+    height: 100px;
+    overflow: hidden;
+    position: relative;
+    width: 300px;
+}
+.jb-scroll-list .overview {
+    left: 0;
+    list-style: none outside none;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    top: 0;
+}
+.jb-scroll-list .scrollbar {
+    background: url("images/bg-scrollbar-track-y-midd.png") repeat-y scroll 0 0 transparent;
+    float: right;
+    position: relative;
+    width: 15px;
+}
+.jb-scroll-list .track {
+    background: url("images/bg-scrollbar-track-y-bottom.png") no-repeat scroll 0 100% transparent;
+    height: 100%;
+    padding: 0px;
+    position: relative;
+    width: 15px;
+}
+.jb-scroll-list .tracktop{ background: transparent url(images/bg-scrollbar-track-y-top.png) no-repeat 0 0; height: 100%; width:15px; position: absolute; top: 0; padding: 0; }
+
+
+.jb-scroll-list .thumb {
+    background: url("images/bg-scrollbar-thumb-y-midd.png") repeat-y scroll 50% 100% transparent;
+    cursor: pointer;
+    height: 20px;
+    left: -5px;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    width: 25px;
+    z-index:1000;
+}
+.jb-scroll-list .thumb .top {
+    background: url("images/bg-scrollbar-thumb-y-top.png") no-repeat scroll 50% 0 transparent;
+    height: 5px;
+    overflow: hidden;
+    width: 25px;
+}
+.jb-scroll-list .thumb .bottom {
+    background: url("images/bg-scrollbar-thumb-y-bottom.png") no-repeat scroll 50% 0 transparent;
+    height: 5px;
+    overflow: hidden;
+    width: 25px;
+    position: absolute;
+    bottom:0;
+}
+.jb-scroll-list .disable {
+    display: none;
+}
+.noSelect {
+    -moz-user-select: none;
+}

@@ -1,0 +1,62 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>jBlocks Demo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes">
+<script src="http://code.jquery.com/jquery-1.9.0.min.js"></script>
+<script type="text/javascript" src="jblocks.min.js"></script>
+<link rel="stylesheet" type="text/css" href="jblocks.css">
+
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+$.jBlocks("autoSyncContentSize");
+
+$.jBlocks("updateOptions",{
+	scrollable: true,
+	margin: [.10,.08,.10,.12],
+	blockShadow: 0.05,
+	onResize: function(geometry,viewport) {
+		this.updateViewportFromGeometry(geometry,viewport,{
+			pixels: 50,
+			minw: 6,
+			maxw: 40,
+			minh: 6,
+			maxh: 24,
+		});
+	},
+});
+
+$.jBlocks("addNewBlock","Text",{
+	h: 1,
+	priority: 100,
+},{
+	w: function(vp) { return vp.w; },
+	text: "Resize your browser",
+	blockContentClass: "jblocks-centered",
+});
+
+for(var i=0;i<20;i++) {
+	(function(index) {
+		$.jBlocks("addNewBlock","Text",{
+				h: 2+Math.floor(Math.random()*3),
+				w: 2+Math.floor(Math.random()*3),
+			},{
+			text: "Block "+index,
+			verticalAlign: true,
+			blockContentClass: "jblocks-centered",
+			onCreate: function() {
+				var r=Math.floor(Math.random()*256);
+				var g=Math.floor(Math.random()*256);
+				var b=Math.floor(Math.random()*256);
+				this.anchor.css("background-color","rgba("+r+","+g+","+b+",0.5)");
+			}
+		});
+	})(i);
+}
+                  
+//--><!]]>
+</script>
+</head>
+<body>
+</body>
+</html>
