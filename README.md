@@ -20,6 +20,10 @@ The resulting layout method is not really deterministic so it may not be suitabl
 
 ### Demos
 
+Real application demo: [Jocly Hub gaming platform](http://www.jocly.com/jocly/hub)
+
+Demos with source code avaiable:
+
 [Basic blocks layout](http://mi-g.github.com/jBlocks/demo/demo1.html)
 
 [Horizontal scrolling](http://mi-g.github.com/jBlocks/demo/demo2.html)
