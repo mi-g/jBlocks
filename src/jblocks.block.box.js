@@ -28,6 +28,7 @@ $.jBlocks("defineBlockClass","Box","JBlock",{
 	 * @param {Boolean} [options.haveClose=false] have an icon to close the block.
 	 * @param {Boolean} [options.haveFullscreen=false] have a Fullscreen entry in the menu.
 	 * @param {Boolean} [options.haveSearch=false] have a icon to search.
+	 * @param {Boolean} [options.haveLogo=false] have an illustration icon
 	 * @param {Array} [options.menuItems] additional menu items.
 	 * @param {Function} [options.onSearchClick] additional function to be called when the search icon is clicked.
 	 * @param {String} [options.closeIconClass="jblocks-icon-close"] class to be used for Close icon.
@@ -35,6 +36,7 @@ $.jBlocks("defineBlockClass","Box","JBlock",{
 	 * @param {String} [options.growIconClass="jblocks-icon-grow"] class to be used for Grow icon.
 	 * @param {String} [options.searchIconClass="jblocks-icon-search"] class to be used for Search icon.
 	 * @param {String} [options.iconsBaseClass="jblocks-block-icon"] base class to be used for icons.
+	 * @param {String} [options.logoIconClass="jblocks-block-icon-logo"] base class to be used for icons.
 	 * @param {String} [options.focusOnTitleClick=true] focus block if title is clicked
 	 */
 	init: function() {
@@ -46,6 +48,8 @@ $.jBlocks("defineBlockClass","Box","JBlock",{
 			haveSearch: false,
 			haveMaximize: true,
 			haveFullscreen: false,
+			haveLogo: false,
+			logoIconClass: "jblocks-block-icon-logo",
 			closeIconClass:"jblocks-icon-close",
 			shrinkIconClass:"jblocks-icon-shrink",
 			growIconClass:"jblocks-icon-grow",
@@ -93,6 +97,15 @@ $.jBlocks("defineBlockClass","Box","JBlock",{
 		for(var i in this.options.menuItems)
 			menuItems.push(this.options.menuItems[i]);
 		
+		if(this.options.haveLogo){
+			this.selfJBlocks.addNewBlock("Icon",{
+					priority:1100,
+					pref:"top left",
+				},{
+					iconClass: this.options.iconsBaseClass,
+					blockContentClass: this.options.logoIconClass,
+				});
+		}
 		if(menuItems.length>0) 
 			this.selfJBlocks.addNewBlock("MenuIcon",{
 					priority:1003,
@@ -169,6 +182,9 @@ $.jBlocks("defineBlockClass","Box","JBlock",{
         		$this.focus();
         		$this.jBlocks.checkLayout();
         	});
+        	txt.content.css({"cursor":"pointer"});
+        }else{
+           	txt.content.css({"cursor":"default"});
         }
 	},
 	/**

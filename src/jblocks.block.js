@@ -118,7 +118,7 @@ $.jBlocks("defineBlockClass","Block","Class",{
 			blockContentClass: null,
 			margin: null,
 			padding: null,
-			borderRadius: 0.15,
+			borderRadius: 0.07,
 			contentBorderRadius: 0.0,
 			capture: false,
 			maximizable: true,
