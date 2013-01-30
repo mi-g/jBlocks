@@ -20,13 +20,13 @@ The resulting layout method is not really deterministic so it may not be suitabl
 
 ### Demos
 
-[Basic blocks layout](http://mig-.github.com/jBlocks/demo/demo1.html)
+[Basic blocks layout](http://mi-g.github.com/jBlocks/demo/demo1.html)
 
-[Horizontal scrolling](http://mig-.github.com/jBlocks/demo/demo2.html)
+[Horizontal scrolling](http://mi-g.github.com/jBlocks/demo/demo2.html)
 
-[Standard block widgets](http://mig-.github.com/jBlocks/demo/demo3.html)
+[Standard block widgets](http://mi-g.github.com/jBlocks/demo/demo3.html)
 
-[Element-based jBlocks](http://mig-.github.com/jBlocks/demo/demo4.html)
+[Element-based jBlocks](http://mi-g.github.com/jBlocks/demo/demo4.html)
 
 ### Project status
 
@@ -42,7 +42,7 @@ jBlocks is open source code and released under [Mozilla Public License 2.0](http
 
 ### jBlocks API
 
-The current API documentation [can be found here](http://mig-.github.com/jBlocks/doc/index.html)
+The current API documentation [can be found here](http://mi-g.github.com/jBlocks/doc/index.html)
 
 #### jBlocks context
 
