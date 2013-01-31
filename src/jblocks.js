@@ -571,7 +571,7 @@
 						contentGeo.top=newGeometry.top;
 						contentGeo.left=newGeometry.left;
 						var randColor="rgba(230,230,230,0.5)";
-						block.anchor.stop().animate(contentGeo,block.options.resizeAnimateDelay,function() {
+						block.anchor.stop().animate(contentGeo,$this.options.resizeAnimateDelay,function() {
 							block.content.show();
 							block.onResize(newGeometry);					
 						});
@@ -580,7 +580,7 @@
 					block.anchor.stop().animate({
 						left: Math.round(layout.c*this.geometry.uWidth),
 						top: Math.round(layout.r*this.geometry.uHeight),
-					},block.options.resizeAnimateDelay,function() {
+					},$this.options.resizeAnimateDelay,function() {
 					});
 				}
 			}
@@ -652,7 +652,7 @@
 						top: -this.viewport.r*this.geometry.uHeight,
 						left: -this.viewport.c*this.geometry.uWidth,
 					};
-					this.frameContent.stop().animate(css,this.scrollAnimateDelay);					
+					this.frameContent.stop().animate(css,this.options.scrollAnimateDelay);					
 				}
 			}
 		}
@@ -660,7 +660,7 @@
 		this.frameContent.stop().animate({
 			top: -this.viewport.r*this.geometry.uHeight,
 			left: -this.viewport.c*this.geometry.uWidth,
-		},this.scrollAnimateDelay);
+		},this.options.scrollAnimateDelay);
 
 		this.focusedBlockId=null;
 
@@ -840,7 +840,7 @@
 					$this.viewport[dir.l]=next;
 					var css={};
 					css[dir.css]=-next*$this.geometry[dir.u];
-					$this.frameContent.stop().animate(css,$this.scrollAnimateDelay);
+					$this.frameContent.stop().animate(css,$this.options.scrollAnimateDelay);
 					//$this.UpdateNavigation($this.viewport);
 				} else
 					break;

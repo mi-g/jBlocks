@@ -58,7 +58,6 @@ $.jBlocks("defineBlockClass","Block","Class",{
 	 * @param {Number} [options.contentBorderRadius=0.1] the block content border radius expressed relatively to the block content size.
 	 * @param {Boolean} [options.requireAuth=false] if set to true, the becomes visible only when the user is logged in.
 	 * @param {Boolean} [options.requireAnon=false] if set to true, the becomes visible only when the user is logged out.
-	 * @param {Number} [options.resizeAnimateDelay=400] the number of milliseconds to animate the block resizing.
 	 * @param {Function} [options.onCreate] function called when the block is created.
 	 * @param {Function} [options.onRemove] function called when the block is removed.
 	 * @param {Function} [options.onResize] function(geometry) called when the block has resized.
@@ -125,7 +124,6 @@ $.jBlocks("defineBlockClass","Block","Class",{
 			requireAuth: false,
 			requireAnon: false,
 			autoFit: false,
-			resizeAnimateDelay: 400,
 			debugBlockLayout: false,
 			onCreate: function(){},
 			onRemove: function(){},
