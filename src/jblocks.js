@@ -228,6 +228,7 @@
 			ownWorker: false,
 			workerURL: null,
 			preInit: function() {},
+			postInit: function() {},
 		};
 		this.geometry={
 			top: 0,
@@ -365,6 +366,7 @@
 		});
 		this.updateOptions({});
 		this.checkLayout();
+		this.options.postInit.call(this);
 	}
 	
 	/**
@@ -514,6 +516,7 @@
 	 * @param {String} [options.workerURL=null] the URL of the worker script file. If set to <i>null</i> the worker script URL is built using the directory path
 	 * of the current script and adding <i>jblocks.worker.js</i>. 
 	 * @param {Function} [options.preInit] if set, this function is called just prior to attaching the jBlocks to its anchor.
+	 * @param {Function} [options.postInit] if set, this function is called just after attaching the jBlocks to its anchor.
 	 */
 	JBlocks.prototype.updateOptions=function(options) {
 		$.extend(this.options,options);
