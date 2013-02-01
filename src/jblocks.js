@@ -1190,7 +1190,7 @@
 		if(!defaultJBlocks)
 			defaultJBlocks=new JBlocks(null);
 		defaultJBlocks.options.ownWorker=true;
-		defaultJBlocks.options.debug=true;
+		//defaultJBlocks.options.debug=true;
 		return defaultJBlocks;
 	}
 	
