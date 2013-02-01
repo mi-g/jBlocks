@@ -167,7 +167,7 @@ $.jBlocks("defineBlockClass","Box","JBlock",{
 				tooltip: this.t('shrink'),
 			});
 		}
-        var txt=this.selfJBlocks.addNewBlock("Text",{
+        this.boxTitle=this.selfJBlocks.addNewBlock("Text",{
     			h: 1,
     			w: 2,
     			priority: 1000,
@@ -178,13 +178,13 @@ $.jBlocks("defineBlockClass","Box","JBlock",{
         		text: this.options.title,
         	});
         if (this.options.focusOnTitleClick){
-        	txt.content.bind($.jBlocks("click"),function(){
+        	this.boxTitle.content.bind($.jBlocks("click"),function(){
         		$this.focus();
         		$this.jBlocks.checkLayout();
         	});
-        	txt.content.css({"cursor":"pointer"});
+        	this.boxTitle.content.css({"cursor":"pointer"});
         }else{
-           	txt.content.css({"cursor":"default"});
+        	this.boxTitle.content.css({"cursor":"default"});
         }
 	},
 	/**
@@ -215,6 +215,16 @@ $.jBlocks("defineBlockClass","Box","JBlock",{
         }));
         newBlock._isBoxContent=true;
         return newBlock;
+	},
+	
+	/**
+	 * Change the title of the box.
+	 * @name Box#setTitle
+	 * @function
+	 * @param {String} title the new title string.
+	 */
+	setTitle: function(title) {
+		this.boxTitle.textVal(title);
 	},
 });
 
