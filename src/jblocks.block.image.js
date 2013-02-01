@@ -46,7 +46,7 @@ $.jBlocks("defineBlockClass","Image","Block",{
 		this._super.apply(this,arguments);
 		if(this.options.onClick) {
 			this.content.addClass("jblocks-clickable");
-			this.content.bind("click",function() {
+			this.content.bind($.jBlocks("click"),function() {
 				$this.options.onClick.call($this);
 			});
 		}

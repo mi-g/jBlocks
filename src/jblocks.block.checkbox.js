@@ -49,7 +49,7 @@ $.jBlocks("defineBlockClass","Checkbox","Block",{
 			float: "left",
 			margin: 0,
 		}).appendTo(this.content);
-		this.content.bind("click",function() {
+		this.content.bind($.jBlocks("click"),function() {
 			$this.options.checked=!$this.options.checked;
 			$this.updateState();
 			$this.options.onChange.call($this,$this.options.checked);

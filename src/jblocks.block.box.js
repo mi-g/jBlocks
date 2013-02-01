@@ -178,7 +178,7 @@ $.jBlocks("defineBlockClass","Box","JBlock",{
         		text: this.options.title,
         	});
         if (this.options.focusOnTitleClick){
-        	txt.content.bind('click',function(){
+        	txt.content.bind($.jBlocks("click"),function(){
         		$this.focus();
         		$this.jBlocks.checkLayout();
         	});

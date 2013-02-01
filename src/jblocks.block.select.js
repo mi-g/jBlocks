@@ -42,7 +42,7 @@ $.jBlocks("defineBlockClass","Select","List",{
 		this.superCreateItem=this.options.createItem;
 		this.options.createItem=function(item,li) {
 			var key=$this.superCreateItem.call(this,item,li);
-			li.bind("click",function() {
+			li.bind($.jBlocks("click"),function() {
 				$this.val(key);
 				$this.list.layout.visible=false;
 				$this.selWidget.layout.visible=true;

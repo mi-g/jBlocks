@@ -51,7 +51,7 @@ $.jBlocks("defineBlockClass","Link","Text",{
 		this.content.addClass(this.options.backgroundClass);
 		for(var attr in this.options.attributes)
 			this.text.attr(attr,this.options.attributes[attr]);
-		this.content.click(function() {
+		this.content.bind($.jBlocks("click"),function() {
 			$this.options.onClick.call($this);
 		});
 		if(this.options.iconUrl) {
