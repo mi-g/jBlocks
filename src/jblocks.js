@@ -727,12 +727,14 @@
 
 		var blocks=[];
 		for(var bi in this.blocks) {
-			var blockData={
-				id: bi,
-			}
 			var block=this.blocks[bi];
-			$.extend(blockData,block.layout);
-			blocks.push(blockData);
+			if(block.anchor) {
+				var blockData={
+						id: bi,
+					}
+				$.extend(blockData,block.layout);
+				blocks.push(blockData);
+			}
 		}
 
 		var worker=this.getWorker();
