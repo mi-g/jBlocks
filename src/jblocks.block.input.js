@@ -42,10 +42,12 @@ $.jBlocks("defineBlockClass","Input","HtmlElement",{
 		this._super.apply(this);
 		var $this=this;
 		this.element.val(this.options.text).bind("keydown",function(event) {
-			if(event.keyCode==13)
-				$this.options.onCR.call($this);
-			else
-				$this.options.onKeyDown.call($this,event.keyCode);
+			setTimeout(function() {
+				if(event.keyCode==13)
+					$this.options.onCR.call($this);
+				else
+					$this.options.onKeyDown.call($this,event.keyCode);
+			},0);
 		});
 	},
 	display: function() {
