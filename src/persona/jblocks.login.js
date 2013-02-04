@@ -83,7 +83,7 @@ $.jBlocks("defineBlockClass","PersonaBox","JBlock",{
 	highlight: function() {
 		$.extend(this.layout,{
 			priority: 1200,
-			w: 4,
+			w: 6,
 			h: 2,
 			pref: "top right",
 		});
@@ -91,7 +91,7 @@ $.jBlocks("defineBlockClass","PersonaBox","JBlock",{
 	unhighlight: function() {
 		$.extend(this.layout,{
 			priority: 0,
-			w: 4,
+			w: 6,
 			h: 3,
 			pref: "bottom right",
 		});
