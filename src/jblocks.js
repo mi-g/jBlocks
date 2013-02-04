@@ -927,7 +927,7 @@
 							$this.frameContent.css("top",Math.min(orgTop-distance,$this.anchor.height()-$this.frameContent.height()));
 					} else if($this.viewport.fixed=="height") {
 						if(direction=="left") {
-							$("head title").text(orgLeft+distance+" "+$this.anchor.width()+" "+$this.frameContent.width());
+							//$("head title").text(orgLeft+distance+" "+$this.anchor.width()+" "+$this.frameContent.width());
 							$this.frameContent.css("left",Math.max(orgLeft-distance,$this.anchor.width()-$this.layoutData.maxSize.w*$this.geometry.uWidth));
 						} else if(direction=="right") {
 							$this.frameContent.css("left",Math.min(0,orgLeft+distance));
