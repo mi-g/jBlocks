@@ -1,0 +1,46 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"> <style>
+	.KEYW {color: #933;}
+	.COMM {color: #bbb; font-style: italic;}
+	.NUMB {color: #393;}
+	.STRN {color: #393;}
+	.REGX {color: #339;}
+	.line {border-right: 1px dotted #666; color: #666; font-style: normal;}
+	</style></head><body><pre><span class='line'>  1</span> <span class="COMM">/* This Source Code Form is subject to the terms of the Mozilla Public
+<span class='line'>  2</span>  * License, v. 2.0. If a copy of the MPL was not distributed with this
+<span class='line'>  3</span>  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */</span><span class="WHIT">
+<span class='line'>  4</span> 
+<span class='line'>  5</span> </span><span class="COMM">/**
+<span class='line'>  6</span>  * @author mig &lt;michel.gutierrez@gmail.com>
+<span class='line'>  7</span>  * @version 0.1
+<span class='line'>  8</span>  * @module jBlocks 
+<span class='line'>  9</span>  * @overview Javascript library for automatic responsive design oriented layouts. 
+<span class='line'> 10</span>  */</span><span class="WHIT">
+<span class='line'> 11</span> 
+<span class='line'> 12</span> </span><span class="COMM">/**
+<span class='line'> 13</span>  * &lt;p>A YouTubeVideo block displays an embedded video from YouTube.&lt;/p>
+<span class='line'> 14</span>  * &lt;p>The constructor should not be invoked directly but {@link JBlocks#newBlock} or {@link JBlocks#addNewBlock} should be used instead.&lt;/p>
+<span class='line'> 15</span>  * @name YouTubeVideo
+<span class='line'> 16</span>  * @class Define a YouTubeVideo block to be displayed into a JBlocks.
+<span class='line'> 17</span>  * @augments Icon
+<span class='line'> 18</span>  */</span><span class="WHIT">
+<span class='line'> 19</span> </span><span class="NAME">$.jBlocks</span><span class="PUNC">(</span><span class="STRN">"defineBlockClass"</span><span class="PUNC">,</span><span class="STRN">"YouTubeVideo"</span><span class="PUNC">,</span><span class="STRN">"IFrame"</span><span class="PUNC">,</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 20</span> </span><span class="WHIT">	</span><span class="COMM">/**
+<span class='line'> 21</span> 	 * Initializes a MenuIcon block.
+<span class='line'> 22</span> 	 * The method is invoked by the jBlocks core and must never be called directly.
+<span class='line'> 23</span> 	 * @name YouTubeVideo#init
+<span class='line'> 24</span> 	 * @function
+<span class='line'> 25</span> 	 * @param {Object} [layout] see {@link Block#init}.
+<span class='line'> 26</span> 	 * @param {Object} [options] in addition to base class options {@link IFrame#init}:
+<span class='line'> 27</span> 	 * @param {Array} [options.youtubeID] the ID of the video at YouTube.
+<span class='line'> 28</span> 	 */</span><span class="WHIT">
+<span class='line'> 29</span> </span><span class="WHIT">	</span><span class="NAME">init</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 30</span> </span><span class="WHIT">		</span><span class="NAME">this._super.apply</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">,</span><span class="NAME">arguments</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 31</span> </span><span class="WHIT">		</span><span class="NAME">$.extend</span><span class="PUNC">(</span><span class="NAME">this.options</span><span class="PUNC">,</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 32</span> </span><span class="WHIT">			</span><span class="NAME">src</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">"http://www.youtube.com/embed/"</span><span class="PUNC">+</span><span class="NAME">this.options.youtubeID</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 33</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 34</span> </span><span class="WHIT">		</span><span class="NAME">this.options</span><span class="PUNC">=</span><span class="NAME">$.extend</span><span class="PUNC">(</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 35</span> </span><span class="WHIT">			</span><span class="NAME">blockContentClass</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="STRN">"jblocks-block-video"</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 36</span> </span><span class="WHIT">		</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="NAME">this.options</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 37</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'> 38</span> </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 39</span> </span></pre></body></html>
