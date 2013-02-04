@@ -886,6 +886,8 @@
 			event.stopPropagation();
 		});
 		
+		var orgTop, orgLeft;
+		
 		this.anchor.swipe({
 			swipeLeft: function(event,direction,distance) {
 				Scroll("right",distance);
@@ -902,6 +904,37 @@
 			swipeDown: function(event,direction,distance) {
 				Scroll("up",distance);
 				event.stopPropagation();
+			},
+			swipeStatus: function(event, phase, direction, distance, duration, fingerCount) {
+				//$("head title").text("JI "+$this.jBlocksIndex+" EV "+event.type+" PH "+phase+" DR "+direction+" DT "+distance+" DU "+duration+" FC "+fingerCount);
+				switch(phase) {
+				case "start":
+					orgTop=parseInt($this.frameContent.css("top"));
+					orgLeft=parseInt($this.frameContent.css("left"));
+					break;
+				case "cancel":
+				//case "end":
+					$this.frameContent.css({
+						top: orgTop,
+						left: orgLeft,
+					});
+					break;
+				case "move":
+					if($this.viewport.fixed=="width") {
+						if(direction=="down")
+							$this.frameContent.css("top",Math.min(0,orgTop+distance));
+						else if(direction=="up")
+							$this.frameContent.css("top",Math.min(orgTop-distance,$this.anchor.height()-$this.frameContent.height()));
+					} else if($this.viewport.fixed=="height") {
+						if(direction=="left") {
+							$("head title").text(orgLeft+distance+" "+$this.anchor.width()+" "+$this.frameContent.width());
+							$this.frameContent.css("left",Math.max(orgLeft-distance,$this.anchor.width()-$this.layoutData.maxSize.w*$this.geometry.uWidth));
+						} else if(direction=="right") {
+							$this.frameContent.css("left",Math.min(0,orgLeft+distance));
+						}
+					}
+					break;
+				}
 			},
 		});
 		
@@ -1178,7 +1211,7 @@
 		if(!clickEvent) {
 			clickEvent="click";
 			if('ontouchstart' in document.documentElement)
-			    clickEvent = "touchstart";
+			    clickEvent = "jblocks.click";
 		}
 		return clickEvent; 
 	}
@@ -1376,4 +1409,26 @@
 		return jb;
 	}
 	
+	if('ontouchstart' in document.documentElement) {
+		var touchstartTime=0, touchstartTarget;
+		$(document).bind("touchstart",function(event) {
+			touchstartTime=new Date().getTime();
+			touchstartTarget=event.target;
+		});
+		$(document).bind("touchend",function(event) {
+			if(touchstartTime) {
+				var now=new Date().getTime();
+				//$("head title").text("touch time: "+(now-touchstartTime)+" "+now+" "+touchstartTime);
+
+				if(now-touchstartTime<200)
+					$(touchstartTarget).trigger("jblocks.click");
+				touchstartTarget=null;
+			}
+		});
+		$(document).bind("touchcancel",function(event) {
+			touchstartTime=0;
+			touchstartTarget=null;
+		});
+	}
+
 })(jQuery);
