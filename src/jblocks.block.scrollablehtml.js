@@ -39,37 +39,18 @@ $.jBlocks("defineBlockClass","ScrollableHtml","Block",{
 	onCreate: function() {
 		var $this=this;
 		
-		var container=this.content;
-		// scrolling control 
-		this.scrollCtrl=$("<div/>").addClass("jb-scroll-list").appendTo(this.content);
-		var scrollbarDiv=$("<div/>").addClass("scrollbar").appendTo(this.scrollCtrl);
-		var track=$("<div/>").addClass("track").appendTo(scrollbarDiv);
-		var tracktop=$("<div/>").addClass("tracktop").appendTo(track);
-		var th=$("<div/>").addClass("thumb").appendTo(track);
-		var top=$("<div/>").addClass("top").appendTo(th);
-		var bottom=$("<div/>").addClass("bottom").appendTo(th);
-		var viewport=$("<div/>").addClass("viewport").appendTo(this.scrollCtrl);
-		this.scrollViewport=$("<div/>").addClass("overview").appendTo(viewport);
-		container=this.scrollViewport;
-		this.content.bind("mousewheel DOMMouseScroll",function(event) {
-			var listCtrl=$this.scrollCtrl;
-			var desabled=scrollbarDiv.hasClass("disable");
-			if(desabled)
-				return;
-			var delta = event.detail < 0 || event.wheelDelta > 0 ? 1 : -1;
-			var thumb = th;
-			var thumbPos=thumb.position();
-			if(delta>0 && thumbPos.top==0)
-				return;
-			if(delta<0 && thumbPos.top+thumb.height()>=track.height())
-				return;
-			event.stopPropagation();
+		this.scrollView=$("<div/>").css({
+		}).appendTo(this.content).html(this.options.htmlContent);
+;
+		this.content.css({
+			"-webkit-overflow-scrolling": "touch",
+			"overflow-y": "auto",
+			"overflow-x": "hidden",
 		});
-		container.html(this.options.htmlContent);
-		
-		this.scrollCtrl.tinyscrollbar({
-			animation: this.options.scrollAnimation,
-		}).bind("updatelayout",function(e){$this.checkState();});
+		this.content.bind("mousewheel DOMMouseScroll",function(event) {
+			if($this.content.height()<$this.scrollView.height())
+				event.stopPropagation();
+		});
 	},
 	/**
 	 * Update scroller state.
@@ -77,40 +58,12 @@ $.jBlocks("defineBlockClass","ScrollableHtml","Block",{
 	 * @function
 	 */
 	checkState: function() {
-		var height=this.content.height()-(this.scrollViewport.outerHeight(true)-this.scrollViewport.height());
-		this.scrollViewport.css("min-height",0);
-		this.viewportHeight=this.scrollViewport.height();
-		this.scrollViewport.css("min-height",height);
-		if (this.scrollCtrl.position()){
-			var h=this.scrollCtrl.parent().outerHeight()-this.scrollCtrl.position().top;
-			var viewport=this.scrollCtrl.children(".viewport");
-
-			//var desabledBefore=this.scrollCtrl.children(".scrollbar").hasClass("disable");
-			
-			viewport.css({height:h});
-			try {
-				this.scrollCtrl.css({height:h});
-				this.scrollCtrl.tinyscrollbar_update();
-			} catch(e) {
-				this.log("error updating tinyscrollbar "+this.jBlocks.jBlocksIndex);
-			}
-						
-			var geomwidth=this.scrollCtrl.parent().outerWidth();
-			var desabled=this.scrollCtrl.children(".scrollbar").hasClass("disable");
-			var lvWidth=desabled?geomwidth:geomwidth-15;
-			this.scrollCtrl.css({width:geomwidth});
-			viewport.css({width:lvWidth});
-			this.scrollViewport.css({width:lvWidth});
-			
-			this.scrollCtrl.tinyscrollbar_update();
-		}
+		this.display();
 	},
 	display: function(geometry) {
-		this.scrollViewport.css("padding-top",0);
-		this.checkState();
-		var spareHeight=this.scrollCtrl.height()-this.viewportHeight;
-		if(this.options.verticalAlign && spareHeight>0)
-			this.scrollViewport.css("padding-top",spareHeight/2);
+		this.scrollView.css("padding-top",0);
+		if(this.options.verticalAlign && this.scrollView.height()<this.content.height())
+			this.scrollView.css("padding-top",(this.content.height()-this.scrollView.height())/2);
 	},
 	/**
 	 * Returns the HTML container so content can be modified directly.
@@ -120,7 +73,7 @@ $.jBlocks("defineBlockClass","ScrollableHtml","Block",{
 	 * @returns the HTML container
 	 */
 	getHtmlContainer:function() {
-		return this.scrollViewport;
+		return this.scrollView;
 	},
 	/**
 	 * Scroll to the bottom of the HTML content.
@@ -128,7 +81,7 @@ $.jBlocks("defineBlockClass","ScrollableHtml","Block",{
 	 * @function
 	 */
 	scrollBottom:function() {
-		this.scrollCtrl.tinyscrollbar_update('bottom');
+		this.content.scrollTop(this.scrollView.height()-this.content.height());
 	},
 	/**
 	 * Scroll to the top of the HTML content.
@@ -136,7 +89,7 @@ $.jBlocks("defineBlockClass","ScrollableHtml","Block",{
 	 * @function
 	 */
 	scrollTop:function() {
-		this.scrollCtrl.tinyscrollbar_update(0);
+		this.content.scrollTop(0);
 	},
 	/**
 	 * Scroll to make specified height visible.
@@ -144,14 +97,7 @@ $.jBlocks("defineBlockClass","ScrollableHtml","Block",{
 	 * @function
 	 */
 	makeVisible:function(top,height) {
-		var viewport=this.scrollCtrl.children(".viewport");
-		var overview=viewport.children(".overview");
-		var overviewTop=-overview.position().top;
-		if(top<overviewTop || top+height>overviewTop+viewport.height()) {
-			var top0=top-(viewport.height()-height)/2;
-			top0=Math.max(0,top0);
-			top0=Math.min(overview.height()-viewport.height(),top0);
-			this.scrollCtrl.tinyscrollbar_update(top0);
-		}
+		if(this.content.scrollTop()>top || this.content.scrollTop()+this.content.height()>top+height) 
+			this.content.scrollTop(Math.max(0,Math.min(top,this.scrollView.height()-height)));
 	},
 });
