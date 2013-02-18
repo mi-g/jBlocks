@@ -662,8 +662,6 @@
 			left: -this.viewport.c*this.geometry.uWidth,
 		},this.options.scrollAnimateDelay);
 
-		this.focusedBlockId=null;
-
 		this.options.onLayoutDone.call(this);
 	}
 	
@@ -813,6 +811,7 @@
 			return;
 		var $this=this;
 		function Scroll(type,distance) {
+			$this.focusedBlockId=null;
 			if(arguments.length<2)
 				distance=1;
 			var dir;
