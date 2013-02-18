@@ -254,6 +254,8 @@ $.jBlocks("defineBlockClass", "List", "JBlock",
 			 */
 			toggleSearch: function() {
 				this.search.layout.visible=!this.search.layout.visible;
+				if(this.search.layout.visible)
+					this.search.focus();
 				this.selfJBlocks.checkLayout();
 			},
 			/** 
