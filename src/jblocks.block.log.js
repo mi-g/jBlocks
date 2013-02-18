@@ -43,6 +43,10 @@ $.jBlocks("defineBlockClass","Log","ScrollableHtml",{
 			"background-color": "White",
 			"border": "2px inset #808080",
 			"padding": 5,
+			overflow: "visible",
+		});
+		this.content.css({
+			overflow: "auto",
 		});
 		this.updateTimer=setInterval(function() {
 			$this.updateLog();
@@ -66,6 +70,9 @@ $.jBlocks("defineBlockClass","Log","ScrollableHtml",{
 	display: function() {
 		this._super();
 		this.scrollBottom();
+		this.getHtmlContainer().css({
+			"min-height": this.content.height()-9,
+		});
 	},
 	/**
 	 * Clears the log.
@@ -111,7 +118,7 @@ $.jBlocks("defineBlockClass","LogBox","Box",{
 	},
 	onCreate: function() {
 		this._super();
-        this.logPanel=this.setContent("Log");
+        this.logPanel=this.setContent("Log",{});
 	},
 	/**
 	 * Clears the log.
