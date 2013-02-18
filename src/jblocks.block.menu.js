@@ -72,7 +72,7 @@ $.jBlocks("defineBlockClass","Menu","JBlock",{
 				block: blockItem,
 			});
 			(function(menuItem) {
-				blockItem.anchor.bind(jBlocks("click"),function() {
+				blockItem.anchor.bind($.jBlocks("click"),function() {
 					menuItem.onClick.call($this);
 				});
 			})(menuItem); 
