@@ -37,6 +37,7 @@ $.jBlocks("defineBlockClass","Input","HtmlElement",{
 		},this.options);
 		this.options.tag="input";
 		this.options.blockClass="jblocks-block-input";
+		this.inputHaveFocus=false;
 	},
 	onCreate: function() {
 		this._super.apply(this);
@@ -55,20 +56,15 @@ $.jBlocks("defineBlockClass","Input","HtmlElement",{
 		this.element.css({
 			"font-size": this.element.height()*0.6+"pt",
 		});
+		if(this.inputHaveFocus) {
+			this.element.focus();
+			this.inputHaveFocus=false;
+		}
 	},
-	/*
-	display: function(geometry) {
-		this.input.css({
-			margin: 0,
-			padding: geometry.height*0.05,
-			"font-size": geometry.height*0.4+"pt",
-		});
-		var extraHeight=this.input.outerHeight(true)-this.input.height();
-		var extraWidth=this.input.outerWidth(true)-this.input.width();
-		this.input.height(geometry.height-extraHeight);
-		this.input.width(geometry.width-extraWidth);
+	focus: function() {
+		this._super.apply(this,arguments);
+		this.inputHaveFocus=true;
 	},
-	*/
 	/**
 	 * Get or set the input field value.
 	 * @param {String} [text] if omitted, the function returns the current value of the field, otherwise, sets the input value.
